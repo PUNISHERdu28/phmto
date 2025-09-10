@@ -1,0 +1,1588 @@
+﻿**********************
+Début de la transcription Windows PowerShell
+Heure de début : 20250901210218
+Nom d'utilisateur : DESKTOP-SR3PDD7\punis
+Utilisateur runAs :  DESKTOP-SR3PDD7\punis
+Nom de la configuration : 
+Ordinateur : DESKTOP-SR3PDD7 (Microsoft Windows NT 10.0.19045.0)
+Application hôte : C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit -command try { . "c:\Users\punis\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+ID de processus : 3968
+PSVersion: 5.1.19041.6216
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6216
+BuildVersion: 10.0.19041.6216
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Health OK â†’ {
+    "api_key_set":  true,
+    "cluster":  "devnet",
+    "data_dir":  "./data",
+    "default_rpc":  "https://api.devnet.solana.com",
+    "ok":  true,
+    "service":  "solana-api",
+    "time":  "2025-09-01T19:02:20.203168Z"
+}
+âœ… Projet crÃ©Ã© : c3a1d93e (projet-X)
+âœ… Wallets crÃ©Ã©s: 6
+â€¢ 7EWYstC6B1as8NwvRepfiSHM7LJsiAnxkJ2DmsBff4HH
+â€¢ P3t6pW2qUb2ejxsVrHYYj5LJS5QVj4NpV3KZEEgei7V
+â€¢ 6DpTz99JVf4HF6gJ9fPuHfXsJVUXxHSoEs2DRfRNEhqf
+â€¢ 7yfihMpZ4f8p2tANXqR7QdGZKwyrMrCqZACgTthP7XdS
+â€¢ 81vTkmtPc8WPVLVvvi3ag1Nmnp62rSw9B3k4BuMAibnu
+â€¢ 8fSnXSmxTyto76hJatZYSvFE5j95DKjdLUJzCp235YFq
+PS>Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "Object of type Signature is not JSON serializable",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+PS>Erreur de terminaison (Assert-ApiOk) : « L’exécution de la commande s’est arrêtée, car la variable de préférence « ErrorActionPreference » ou le paramètre courant a la valeur Stop : Ã‰chec airdrop (HTTP 400) : Le serveur distant a retourné une erreur : (400) Demande incorrecte. /  »
+>> Erreur de terminaison (Assert-ApiOk) : « L’exécution de la commande s’est arrêtée, car la variable de préférence « ErrorActionPreference » ou le paramètre courant a la valeur Stop : Ã‰chec airdrop (HTTP 400) : Le serveur distant a retourné une erreur : (400) Demande incorrecte. /  »
+>> Erreur de terminaison (Assert-ApiOk) : « L’exécution de la commande s’est arrêtée, car la variable de préférence « ErrorActionPreference » ou le paramètre courant a la valeur Stop : Ã‰chec airdrop (HTTP 400) : Le serveur distant a retourné une erreur : (400) Demande incorrecte. /  »
+>> Erreur de terminaison (Assert-ApiOk) : « L’exécution de la commande s’est arrêtée, car la variable de préférence « ErrorActionPreference » ou le paramètre courant a la valeur Stop : Ã‰chec airdrop (HTTP 400) : Le serveur distant a retourné une erreur : (400) Demande incorrecte. /  »
+L’exécution de la commande s’est arrêtée, car la variable de préférence « ErrorActionPreference » ou le paramètre courant a la valeur Stop : Ã‰chec airdrop (HTTP 400) : Le serveur distant a retourné une erreur : (400) Demande incorrecte. /
+Assert-ApiOk : Ã‰chec airdrop (HTTP 400) : Le serveur distant a retourné une erreur : (400) Demande incorrecte. /
+Au caractère D:\Bureau\Projets\API\Script_test.ps1:145 : 5
++     Assert-ApiOk $adRes "airdrop"
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,Assert-ApiOk
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Uri "http://localhost:8000/health"
+
+
+api_key_set : True
+cluster     : devnet
+data_dir    : ./data
+default_rpc : https://api.devnet.solana.com
+ok          : True
+service     : solana-api
+time        : 2025-09-01T19:05:48.254881Z
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>curl
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>curl http://localhost:8000/health
+
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {
+                      "api_key_set": true,
+                      "cluster": "devnet",
+                      "data_dir": "./data",
+                      "default_rpc": "https://api.devnet.solana.com",
+                      "ok": true,
+                      "service": "solana-api",
+                      "time": "2025-09-01T19:11:42.380765...
+RawContent        : HTTP/1.1 200 OK
+                    Connection: close
+                    Content-Length: 205
+                    Content-Type: application/json
+                    Date: Mon, 01 Sep 2025 19:11:42 GMT
+                    Server: Werkzeug/3.1.3 Python/3.10.11
+
+                    {
+                      "api_key_set": true,
+                      "clust...
+Forms             : {}
+Headers           : {[Connection, close], [Content-Length, 205], [Content-Type, application/json], [Date, Mon, 01
+                    Sep 2025 19:11:42 GMT]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : mshtml.HTMLDocumentClass
+RawContentLength  : 205
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Uri "http://localhost:8000/health"
+
+
+api_key_set : True
+cluster     : devnet
+data_dir    : ./data
+default_rpc : https://api.devnet.solana.com
+ok          : True
+service     : solana-api
+time        : 2025-09-01T19:12:01.336170Z
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>curl -X POST http://localhost:8000/api/v1/projects `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer dev-secret" `
+  -d '{ "name":"projet-X" }'
+>> Erreur de terminaison (Invoke-WebRequest) : « Impossible de lier le paramètre « Headers ». Impossible de convertir la valeur « Content-Type: application/json » du type « System.String » en type « System.Collections.IDictionary ». »
+Invoke-WebRequest : Impossible de lier le paramètre «Headers». Impossible de convertir la valeur «Content-Type: 
+application/json» du type «System.String» en type «System.Collections.IDictionary».
+Au caractère Ligne:2 : 6
++   -H "Content-Type: application/json" `
++      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument : (:) [Invoke-WebRequest], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgumentNoMessage,Microsoft.PowerShell.Commands.InvokeWebRequestCommand
+Invoke-WebRequest : Impossible de lier le paramètre «Headers». Impossible de convertir la valeur «Content-Type:
+application/json» du type «System.String» en type «System.Collections.IDictionary».
+Au caractère Ligne:2 : 6
++   -H "Content-Type: application/json" `
++      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument : (:) [Invoke-WebRequest], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgumentNoMessage,Microsoft.PowerShell.Commands.InvokeWebRequestCommand
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Headers = @{
+  "Content-Type" = "application/json"
+  "Authorization" = "Bearer dev-secret"
+}
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ name = "projet-X" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/projects" -Headers $Headers -Body $Body
+
+  ok project
+  -- -------
+True @{created_at=2025-09-01T19:15:11Z; extras=; name=projet-X; project_id=e5201666; pumpfun=; slug=projet-x; to...
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$PROJECT_ID = "e5201666"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ n = 6 } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/projects/$PROJECT_ID/wallets" `
+  -Headers @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" } `
+  -Body $Body
+
+created   ok wallets
+-------   -- -------
+      6 True {EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h, 5ntcTpfLMAGZkAbhtis1sJq1ZkjSgEN3ZZHoMU7K725r, J5p2py...
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "http://localhost:8000/api/v1/wallets/$ADDR/balance?cluster=devnet" `
+  -Headers @{ "Authorization"="Bearer dev-secret" }
+
+
+address     : EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h
+balance_sol : 0,0
+cluster     : devnet
+ok          : True
+rpc_url     : https://api.devnet.solana.com
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ address = $ADDR; sol = 0.5; cluster = "devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/airdrop" `
+  -Headers @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" } `
+  -Body $Body
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/air ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/air ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Headers = @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># 0. Vérifie à nouveau le solde
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/wallets/$ADDR/balance?cluster=devnet" -Headers @{ "Authorization"="Bearer dev-secret" }
+
+
+address     : EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h
+balance_sol : 0,0
+cluster     : devnet
+ok          : True
+rpc_url     : https://api.devnet.solana.com
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># 1. Airdrop 0.2 SOL
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ address = $ADDR; sol = 0.2; cluster = "devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $Headers -Body $Body | ConvertTo-Json -Depth 8
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "Object of type Signature is not JSON serializable",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "Object of type Signature is not JSON serializable",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "Object of type Signature is not JSON serializable",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Headers = @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ address = $ADDR; sol = 0.2; cluster = "devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $Headers -Body $Body
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "airdrop exception",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "airdrop exception",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "airdrop exception",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git --version
+git version 2.40.1.windows.1
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Headers = @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ address = $ADDR; sol = 0.2; cluster = "devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $Headers -Body $Body | ConvertTo-Json -Depth 8
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "SolanaRpcException",
+  "error_type": "SolanaRpcException",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "SolanaRpcException",
+  "error_type": "SolanaRpcException",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "SolanaRpcException",
+  "error_type": "SolanaRpcException",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API="http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$H=@{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR="EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># 0.1 SOL puis attendre ~60s avant de retenter si besoin
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body=@{ address=$ADDR; sol=0.1; cluster="devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "SolanaRpcException",
+  "error_type": "SolanaRpcException",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "SolanaRpcException",
+  "error_type": "SolanaRpcException",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "SolanaRpcException",
+  "error_type": "SolanaRpcException",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Uri "$API/health"
+
+
+api_key_set : True
+cluster     : devnet
+data_dir    : ./data
+default_rpc : https://api.devnet.solana.com
+ok          : True
+service     : solana-api
+time        : 2025-09-01T19:46:34.172875Z
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$H = @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "<une_adresse_devnet>"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ address=$ADDR; sol=0.1; cluster="devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body | ConvertTo-Json -Depth 8
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "invalid address",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "invalid address",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "invalid address",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body | ConvertTo-Json -Depth 8
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "invalid address",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "invalid address",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "invalid address",
+  "ok": false,
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$H = @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># 1) Mets la vraie adresse
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># 2) Recrée le body APRÈS avoir mis $ADDR
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body = @{ address = $ADDR; sol = 0.1; cluster = "devnet" } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># 3) Envoie la requête
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "SolanaRpcException",
+  "ok": false,
+  "rpc_error_code": null,
+  "rpc_error_data": null,
+  "rpc_error_type": "SolanaRpcException",
+  "rpc_url": "https://api.devnet.solana.com"
+}
+ »
+Invoke-RestMethod : {
+  "error": "SolanaRpcException",
+  "ok": false,
+  "rpc_error_code": null,
+  "rpc_error_data": null,
+  "rpc_error_type": "SolanaRpcException",
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "SolanaRpcException",
+  "ok": false,
+  "rpc_error_code": null,
+  "rpc_error_data": null,
+  "rpc_error_type": "SolanaRpcException",
+  "rpc_url": "https://api.devnet.solana.com"
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body
+{
+    "cluster":  "devnet",
+    "sol":  0.1,
+    "address":  "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+}
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR = $ADDR.Trim()
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>if ($ADDR -notmatch '^[1-9A-HJ-NP-Za-km-z]{32,44}$') { "Adresse suspecte" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/wallets/$ADDR/balance?cluster=devnet" -Headers @{ "Authorization"="Bearer dev-secret" }
+
+
+address     : EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h
+balance_sol : 0,2
+cluster     : devnet
+ok          : True
+rpc_url     : https://api.devnet.solana.com
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API="http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$H=@{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR="EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body=@{ address=$ADDR; sol=0.2; cluster="devnet"; confirm_seconds=15; confirm_interval=1 } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body | ConvertTo-Json -Depth 8
+>> Erreur de terminaison (Invoke-RestMethod) : « Impossible de se connecter au serveur distant »
+Invoke-RestMethod : Impossible de se connecter au serveur distant
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : System.Net.WebException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : Impossible de se connecter au serveur distant
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : System.Net.WebException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/wallets/$ADDR/balance?cluster=devnet" -Headers @{ "Authorization"="Bearer dev-secret" }
+>> Erreur de terminaison (Invoke-RestMethod) : « Impossible de se connecter au serveur distant »
+Invoke-RestMethod : Impossible de se connecter au serveur distant
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method GET -Uri "$API/api/v1/wallets/$ADDR/balance ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : Impossible de se connecter au serveur distant
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method GET -Uri "$API/api/v1/wallets/$ADDR/balance ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API="http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$H=@{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" }
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$ADDR="EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$Body=@{ address=$ADDR; sol=0.2; cluster="devnet"; confirm_seconds=15; confirm_interval=1 } | ConvertTo-Json
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body | ConvertTo-Json -Depth 8
+{
+    "attempts":  7,
+    "cluster":  "devnet",
+    "confirmation":  "none",
+    "delta_sol":  0.0,
+    "error":  "pending confirmation (no signature, no balance delta within window)",
+    "ok":  false,
+    "post_balance":  0.2,
+    "pre_balance":  0.2,
+    "rpc_url":  "https://api.devnet.solana.com",
+    "signature":  null,
+    "waited_seconds":  15.125
+}
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/wallets/$ADDR/balance?cluster=devnet" -Headers @{ "Authorization"="Bearer dev-secret" }
+
+
+address     : EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h
+balance_sol : 0,2
+cluster     : devnet
+ok          : True
+rpc_url     : https://api.devnet.solana.com
+
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body | ConvertTo-Json -Depth 8
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "$API/api/v1/airdrop" -Headers $H -Body $Body | ConvertTo-Json -Depth 8
+{
+    "attempts_airdrop":  1,
+    "cluster":  "devnet",
+    "confirmation":  "none",
+    "delta_sol":  0.0,
+    "error":  "pending confirmation (no signature, no balance delta within window)",
+    "errors":  [
+                   {
+                       "code":  null,
+                       "data":  null,
+                       "message":  "SolanaRpcException",
+                       "type":  "SolanaRpcException"
+                   }
+               ],
+    "ok":  false,
+    "post_balance":  0.2,
+    "pre_balance":  0.2,
+    "rpc_url":  "https://api.devnet.solana.com",
+    "waited_seconds":  17.563
+}
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/projects/$PROJECT_ID/wallets" `
+  -Headers @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" } `
+  -Body $Body
+
+created   ok wallets
+-------   -- -------
+      1 True {6DjhENNj8ZfBto1kc7tT71JvkatYH9uxmoifNQzkD9QV}
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/projects/$PROJECT_ID/wallets" `
+  -Headers @{ "Content-Type"="application/json"; "Authorization"="Bearer dev-secret" } `
+  -Body $Body
+
+created   ok wallets
+-------   -- -------
+      1 True {GNeqJsNYJxiBJyxKa3vua6CSJWjvpfK6M8qz7Rst7Ubi}
+
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+]633;D]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$PROJECT_ID = "e5201666"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PROJECT_ID/wallets" `
+  -Headers @{ "Authorization"="Bearer dev-secret" } | ConvertTo-Json -Depth 6
+>> Erreur de terminaison (Invoke-RestMethod) : « 
+
+  
+    NameError: name &#39;os&#39; is not defined
+ // Werkzeug Debugger
+    
+    
+    
+    
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = "ToyPLwWA4EI0B8Y0qFr3";
+    
+  
+  
+    
+NameError
+
+  NameError: name &#39;os&#39; is not defined
+
+
+Traceback (most recent call last)
+
+  
+  
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1536,
+      in __call__
+      ) -&gt; cabc.Iterable[bytes]:
+        &#34;&#34;&#34;The WSGI server calls the Flask application object as the
+        WSGI application. This calls :meth:`wsgi_app`, which can be
+        wrapped to apply middleware.
+        &#34;&#34;&#34;
+        return self.wsgi_app(environ, start_response)
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1514,
+      in wsgi_app
+              try:
+                ctx.push()
+                response = self.full_dispatch_request()
+            except Exception as e:
+                error = e
+                response = self.handle_exception(e)
+            except:  # noqa: B001
+                error = sys.exc_info()[1]
+                raise
+            return response(environ, start_response)
+        finally:
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1511,
+      in wsgi_app
+          ctx = self.request_context(environ)
+        error: BaseException | None = None
+        try:
+            try:
+                ctx.push()
+                response = self.full_dispatch_request()
+            except Exception as e:
+                error = e
+                response = self.handle_exception(e)
+            except:  # noqa: B001
+                error = sys.exc_info()[1]
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 919,
+      in full_dispatch_request
+              request_started.send(self, _async_wrapper=self.ensure_sync)
+            rv = self.preprocess_request()
+            if rv is None:
+                rv = self.dispatch_request()
+        except Exception as e:
+            rv = self.handle_user_exception(e)
+        return self.finalize_request(rv)
+ 
+    def finalize_request(
+        self,
+        rv: ft.ResponseReturnValue | HTTPException,
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 917,
+      in full_dispatch_request
+   
+        try:
+            request_started.send(self, _async_wrapper=self.ensure_sync)
+            rv = self.preprocess_request()
+            if rv is None:
+                rv = self.dispatch_request()
+        except Exception as e:
+            rv = self.handle_user_exception(e)
+        return self.finalize_request(rv)
+ 
+    def finalize_request(
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 902,
+      in dispatch_request
+              and req.method == &#34;OPTIONS&#34;
+        ):
+            return self.make_default_options_response()
+        # otherwise dispatch to the handler for that endpoint
+        view_args: dict[str, t.Any] = req.view_args  # type: ignore[assignment]
+        return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+ 
+    def full_dispatch_request(self) -&gt; Response:
+        &#34;&#34;&#34;Dispatches the request and on top of that performs request
+        pre and postprocessing as well as HTTP exception catching and
+        error handling.
+
+
+
+  File "D:\Bureau\Projets\API\middleware\auth.py",
+      line 17,
+      in wrapper
+          got = (request.headers.get(&#34;Authorization&#34;) or &#34;&#34;).strip()
+        if got.startswith(&#34;Bearer &#34;):
+            got = got.split(&#34; &#34;, 1)[1]
+        if got != expected:
+            return jsonify({&#34;ok&#34;: False, &#34;error&#34;: &#34;unauthorized&#34;}), 401
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+
+  File "D:\Bureau\Projets\API\blueprints\projects.py",
+      line 59,
+      in list_wallets
+  def list_wallets(project_id):
+    &#34;&#34;&#34;
+    Liste les wallets d&#39;un projet donné.
+    Retourne juste les adresses publiques (optionnellement on peut aussi lire les soldes).
+    &#34;&#34;&#34;
+    project_path = os.path.join(current_app.config[&#34;DATA_DIR&#34;], &#34;projects&#34;, project_id, &#34;wallets&#34;)
+    if not os.path.isdir(project_path):
+        return jsonify({&#34;ok&#34;: False, &#34;error&#34;: &#34;project not found&#34;}), 404
+ 
+    wallets = []
+    for fname in os.listdir(project_path):
+
+
+  NameError: name &#39;os&#39; is not defined
+
+
+
+
+    
+      This is the Copy/Paste friendly version of the traceback.
+    
+    Traceback (most recent call last):
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File &#34;D:\Bureau\Projets\API\middleware\auth.py&#34;, line 17, in wrapper
+    return fn(*args, **kwargs)
+  File &#34;D:\Bureau\Projets\API\blueprints\projects.py&#34;, line 59, in list_wallets
+    project_path = os.path.join(current_app.config[&#34;DATA_DIR&#34;], &#34;projects&#34;, project_id, &#34;wallets&#34;)
+NameError: name &#39;os&#39; is not defined
+
+
+
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.  
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.
+
+      
+        Brought to you by DON'T PANIC, your
+        friendly Werkzeug powered traceback interpreter.
+      
+    
+
+    
+      
+        Console Locked
+        
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+        
+          PIN:
+            
+            
+        
+      
+    
+  
+
+
+
+ »
+Invoke-RestMethod : 
+
+  
+    NameError: name &#39;os&#39; is not defined
+ // Werkzeug Debugger
+    
+    
+    
+    
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = "ToyPLwWA4EI0B8Y0qFr3";
+    
+  
+  
+    
+NameError
+
+  NameError: name &#39;os&#39; is not defined
+
+
+Traceback (most recent call last)
+
+  
+  
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1536,
+      in __call__
+      ) -&gt; cabc.Iterable[bytes]:
+        &#34;&#34;&#34;The WSGI server calls the Flask application object as the
+        WSGI application. This calls :meth:`wsgi_app`, which can be
+        wrapped to apply middleware.
+        &#34;&#34;&#34;
+        return self.wsgi_app(environ, start_response)
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1514,
+      in wsgi_app
+              try:
+                ctx.push()
+                response = self.full_dispatch_request()
+            except Exception as e:
+                error = e
+                response = self.handle_exception(e)
+            except:  # noqa: B001
+                error = sys.exc_info()[1]
+                raise
+            return response(environ, start_response)
+        finally:
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1511,
+      in wsgi_app
+          ctx = self.request_context(environ)
+        error: BaseException | None = None
+        try:
+            try:
+                ctx.push()
+                response = self.full_dispatch_request()
+            except Exception as e:
+                error = e
+                response = self.handle_exception(e)
+            except:  # noqa: B001
+                error = sys.exc_info()[1]
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 919,
+      in full_dispatch_request
+              request_started.send(self, _async_wrapper=self.ensure_sync)
+            rv = self.preprocess_request()
+            if rv is None:
+                rv = self.dispatch_request()
+        except Exception as e:
+            rv = self.handle_user_exception(e)
+        return self.finalize_request(rv)
+ 
+    def finalize_request(
+        self,
+        rv: ft.ResponseReturnValue | HTTPException,
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 917,
+      in full_dispatch_request
+   
+        try:
+            request_started.send(self, _async_wrapper=self.ensure_sync)
+            rv = self.preprocess_request()
+            if rv is None:
+                rv = self.dispatch_request()
+        except Exception as e:
+            rv = self.handle_user_exception(e)
+        return self.finalize_request(rv)
+ 
+    def finalize_request(
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 902,
+      in dispatch_request
+              and req.method == &#34;OPTIONS&#34;
+        ):
+            return self.make_default_options_response()
+        # otherwise dispatch to the handler for that endpoint
+        view_args: dict[str, t.Any] = req.view_args  # type: ignore[assignment]
+        return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+ 
+    def full_dispatch_request(self) -&gt; Response:
+        &#34;&#34;&#34;Dispatches the request and on top of that performs request
+        pre and postprocessing as well as HTTP exception catching and
+        error handling.
+
+
+
+  File "D:\Bureau\Projets\API\middleware\auth.py",
+      line 17,
+      in wrapper
+          got = (request.headers.get(&#34;Authorization&#34;) or &#34;&#34;).strip()
+        if got.startswith(&#34;Bearer &#34;):
+            got = got.split(&#34; &#34;, 1)[1]
+        if got != expected:
+            return jsonify({&#34;ok&#34;: False, &#34;error&#34;: &#34;unauthorized&#34;}), 401
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+
+  File "D:\Bureau\Projets\API\blueprints\projects.py",
+      line 59,
+      in list_wallets
+  def list_wallets(project_id):
+    &#34;&#34;&#34;
+    Liste les wallets d&#39;un projet donné.
+    Retourne juste les adresses publiques (optionnellement on peut aussi lire les soldes).
+    &#34;&#34;&#34;
+    project_path = os.path.join(current_app.config[&#34;DATA_DIR&#34;], &#34;projects&#34;, project_id, 
+&#34;wallets&#34;)
+    if not os.path.isdir(project_path):
+        return jsonify({&#34;ok&#34;: False, &#34;error&#34;: &#34;project not found&#34;}), 404
+ 
+    wallets = []
+    for fname in os.listdir(project_path):
+
+
+  NameError: name &#39;os&#39; is not defined
+
+
+
+
+    
+      This is the Copy/Paste friendly version of the traceback.
+    
+    Traceback (most recent call last):
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File &#34;D:\Bureau\Projets\API\middleware\auth.py&#34;, line 17, in wrapper
+    return fn(*args, **kwargs)
+  File &#34;D:\Bureau\Projets\API\blueprints\projects.py&#34;, line 59, in list_wallets
+    project_path = os.path.join(current_app.config[&#34;DATA_DIR&#34;], &#34;projects&#34;, project_id, 
+&#34;wallets&#34;)
+NameError: name &#39;os&#39; is not defined
+
+
+
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.  
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.
+
+      
+        Brought to you by DON'T PANIC, your
+        friendly Werkzeug powered traceback interpreter.
+      
+    
+
+    
+      
+        Console Locked
+        
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+        
+          PIN:
+            
+            
+        
+      
+    
+  
+
+
+
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PROJECT_ID/ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod :
+
+
+    NameError: name &#39;os&#39; is not defined
+ // Werkzeug Debugger
+
+
+
+
+      var CONSOLE_MODE = false,
+          EVALEX = true,
+          EVALEX_TRUSTED = false,
+          SECRET = "ToyPLwWA4EI0B8Y0qFr3";
+
+
+
+
+NameError
+
+  NameError: name &#39;os&#39; is not defined
+
+
+Traceback (most recent call last)
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1536,
+      in __call__
+      ) -&gt; cabc.Iterable[bytes]:
+        &#34;&#34;&#34;The WSGI server calls the Flask application object as the
+        WSGI application. This calls :meth:`wsgi_app`, which can be
+        wrapped to apply middleware.
+        &#34;&#34;&#34;
+        return self.wsgi_app(environ, start_response)
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1514,
+      in wsgi_app
+              try:
+                ctx.push()
+                response = self.full_dispatch_request()
+            except Exception as e:
+                error = e
+                response = self.handle_exception(e)
+            except:  # noqa: B001
+                error = sys.exc_info()[1]
+                raise
+            return response(environ, start_response)
+        finally:
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 1511,
+      in wsgi_app
+          ctx = self.request_context(environ)
+        error: BaseException | None = None
+        try:
+            try:
+                ctx.push()
+                response = self.full_dispatch_request()
+            except Exception as e:
+                error = e
+                response = self.handle_exception(e)
+            except:  # noqa: B001
+                error = sys.exc_info()[1]
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 919,
+      in full_dispatch_request
+              request_started.send(self, _async_wrapper=self.ensure_sync)
+            rv = self.preprocess_request()
+            if rv is None:
+                rv = self.dispatch_request()
+        except Exception as e:
+            rv = self.handle_user_exception(e)
+        return self.finalize_request(rv)
+
+    def finalize_request(
+        self,
+        rv: ft.ResponseReturnValue | HTTPException,
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 917,
+      in full_dispatch_request
+
+        try:
+            request_started.send(self, _async_wrapper=self.ensure_sync)
+            rv = self.preprocess_request()
+            if rv is None:
+                rv = self.dispatch_request()
+        except Exception as e:
+            rv = self.handle_user_exception(e)
+        return self.finalize_request(rv)
+
+    def finalize_request(
+
+
+
+  File "D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py",
+      line 902,
+      in dispatch_request
+              and req.method == &#34;OPTIONS&#34;
+        ):
+            return self.make_default_options_response()
+        # otherwise dispatch to the handler for that endpoint
+        view_args: dict[str, t.Any] = req.view_args  # type: ignore[assignment]
+        return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+
+    def full_dispatch_request(self) -&gt; Response:
+        &#34;&#34;&#34;Dispatches the request and on top of that performs request
+        pre and postprocessing as well as HTTP exception catching and
+        error handling.
+
+
+
+  File "D:\Bureau\Projets\API\middleware\auth.py",
+      line 17,
+      in wrapper
+          got = (request.headers.get(&#34;Authorization&#34;) or &#34;&#34;).strip()
+        if got.startswith(&#34;Bearer &#34;):
+            got = got.split(&#34; &#34;, 1)[1]
+        if got != expected:
+            return jsonify({&#34;ok&#34;: False, &#34;error&#34;: &#34;unauthorized&#34;}), 401
+        return fn(*args, **kwargs)
+    return wrapper
+
+
+
+  File "D:\Bureau\Projets\API\blueprints\projects.py",
+      line 59,
+      in list_wallets
+  def list_wallets(project_id):
+    &#34;&#34;&#34;
+    Liste les wallets d&#39;un projet donné.
+    Retourne juste les adresses publiques (optionnellement on peut aussi lire les soldes).
+    &#34;&#34;&#34;
+    project_path = os.path.join(current_app.config[&#34;DATA_DIR&#34;], &#34;projects&#34;, project_id, &#34;wallets&#34;)
+    if not os.path.isdir(project_path):
+        return jsonify({&#34;ok&#34;: False, &#34;error&#34;: &#34;project not found&#34;}), 404
+
+    wallets = []
+    for fname in os.listdir(project_path):
+
+
+  NameError: name &#39;os&#39; is not defined
+
+
+
+
+
+      This is the Copy/Paste friendly version of the traceback.
+
+    Traceback (most recent call last):
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File &#34;D:\Bureau\Projets\API\.venv\lib\site-packages\flask\app.py&#34;, line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File &#34;D:\Bureau\Projets\API\middleware\auth.py&#34;, line 17, in wrapper
+    return fn(*args, **kwargs)
+  File &#34;D:\Bureau\Projets\API\blueprints\projects.py&#34;, line 59, in list_wallets
+    project_path = os.path.join(current_app.config[&#34;DATA_DIR&#34;], &#34;projects&#34;, project_id, &#34;wallets&#34;)
+NameError: name &#39;os&#39; is not defined
+
+
+
+  The debugger caught an exception in your WSGI application.  You can now
+  look at the traceback which led to the error.
+  If you enable JavaScript you can also use additional features such as code
+  execution (if the evalex feature is enabled), automatic pasting of the
+  exceptions and much more.
+
+
+        Brought to you by DON'T PANIC, your
+        friendly Werkzeug powered traceback interpreter.
+
+
+
+
+
+        Console Locked
+
+          The console is locked and needs to be unlocked by entering the PIN.
+          You can find the PIN printed out on the standard output of your
+          shell that runs the server.
+
+          PIN:
+
+
+
+
+
+
+
+
+
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PROJECT_ID/ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$API = "http://localhost:8000"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$PID = "e5201666"
+Impossible de remplacer la variable PID, car elle est constante ou en lecture seule.
+Au caractère Ligne:1 : 1
++ $PID = "e5201666"
++ ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PID:String) [], SessionStateUnauthorizedAccessException
+    + FullyQualifiedErrorId : VariableNotWritable
+Impossible de remplacer la variable PID, car elle est constante ou en lecture seule.
+Au caractère Ligne:1 : 1
++ $PID = "e5201666"
++ ~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (PID:String) [], SessionStateUnauthorizedAccessException
+    + FullyQualifiedErrorId : VariableNotWritable
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>$PIDp = "e5201666"
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS># Liste simple
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PID/wallets" `
+  -Headers @{ "Authorization"="Bearer dev-secret" } | ConvertTo-Json -Depth 6
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PIDp/wallets" `
+  -Headers @{ "Authorization"="Bearer dev-secret" } | ConvertTo-Json -Depth 6
+{
+    "cluster":  "devnet",
+    "name":  "projet-X",
+    "ok":  true,
+    "project_id":  "e5201666",
+    "rpc_used":  "https://api.devnet.solana.com",
+    "wallets":  [
+                    {
+                        "address":  "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+                    },
+                    {
+                        "address":  "5ntcTpfLMAGZkAbhtis1sJq1ZkjSgEN3ZZHoMU7K725r"
+                    },
+                    {
+                        "address":  "J5p2pyU6yLXptscmv6RYaG2ccpKSxKKgunAxR9Sbu7pb"
+                    },
+                    {
+                        "address":  "CWuibmE4EvErDgsbsJoBs8XjWYudXLPU6QBCq7v8pGRN"
+                    },
+                    {
+                        "address":  "vst2b724ZHwgwAW6grC5EHBqLQu9NjccERdeTCKwzYh"
+                    },
+                    {
+                        "address":  "zuryLeDiCnu1zpULguqnexWFLyTHPMexkxtTMsrTAw8"
+                    },
+                    {
+                        "address":  "6DjhENNj8ZfBto1kc7tT71JvkatYH9uxmoifNQzkD9QV"
+                    },
+                    {
+                        "address":  "GNeqJsNYJxiBJyxKa3vua6CSJWjvpfK6M8qz7Rst7Ubi"
+                    }
+                ]
+}
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git init
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git add .
+
+PS>Erreur de terminaison () : « Le pipeline a été arrêté. »
+>> Erreur de terminaison () : « Le pipeline a été arrêté. »
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>ni .gitignore
+ni : Le fichier 'D:\Bureau\Projets\API\.gitignore' existe déjà.
+Au caractère Ligne:1 : 1
++ ni .gitignore
++ ~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (D:\Bureau\Projets\API\.gitignore:String) [New-Item], IOException
+    + FullyQualifiedErrorId : NewItemIOError,Microsoft.PowerShell.Commands.NewItemCommand
+ni : Le fichier 'D:\Bureau\Projets\API\.gitignore' existe déjà.
+Au caractère Ligne:1 : 1
++ ni .gitignore
++ ~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (D:\Bureau\Projets\API\.gitignore:String) [New-Item], IOException
+    + FullyQualifiedErrorId : NewItemIOError,Microsoft.PowerShell.Commands.NewItemCommand
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git add .
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git rm -r --cached .venv
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git rm -r --cached __pycache__
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git commit -m "Premier commit sans venv ni pycache"
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git add .\Dockerfile
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git status
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git push origin main
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git push master main
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git branch
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git push -u origin master
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git remote add https://github.com/PUNISHERdu28/phmto.git
+
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git remote add origin https://github.com/PUNISHERdu28/phmto.git
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git remote -v
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git push -u origin master
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git add .\README.md
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git commit -m "Update du Readme avec les nouvelles requêtes API"
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>git push -u origin master
+
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PIDp/wallets" `
+  -Headers @{ "Authorization"="Bearer dev-secret" } | ConvertTo-Json -Depth 6
+{
+    "cluster":  "devnet",
+    "name":  "projet-X",
+    "ok":  true,
+    "project_id":  "e5201666",
+    "rpc_used":  "https://api.devnet.solana.com",
+    "wallets":  [
+                    {
+                        "address":  "EZbdaGCsTjkYVSBWM2cxzp1PKMKXF3RdazpyeyZPoT9h"
+                    },
+                    {
+                        "address":  "5ntcTpfLMAGZkAbhtis1sJq1ZkjSgEN3ZZHoMU7K725r"
+                    },
+                    {
+                        "address":  "J5p2pyU6yLXptscmv6RYaG2ccpKSxKKgunAxR9Sbu7pb"
+                    },
+                    {
+                        "address":  "CWuibmE4EvErDgsbsJoBs8XjWYudXLPU6QBCq7v8pGRN"
+                    },
+                    {
+                        "address":  "vst2b724ZHwgwAW6grC5EHBqLQu9NjccERdeTCKwzYh"
+                    },
+                    {
+                        "address":  "zuryLeDiCnu1zpULguqnexWFLyTHPMexkxtTMsrTAw8"
+                    },
+                    {
+                        "address":  "6DjhENNj8ZfBto1kc7tT71JvkatYH9uxmoifNQzkD9QV"
+                    },
+                    {
+                        "address":  "GNeqJsNYJxiBJyxKa3vua6CSJWjvpfK6M8qz7Rst7Ubi"
+                    }
+                ]
+}
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PID/wallets" `
+  -Headers @{ "Authorization"="Bearer dev-secret" } | ConvertTo-Json -Depth 6
+>> Erreur de terminaison (Invoke-RestMethod) : « {
+  "error": "project not found",
+  "ok": false
+}
+ »
+Invoke-RestMethod : {
+  "error": "project not found",
+  "ok": false
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PID/wallets ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], 
+WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+Invoke-RestMethod : {
+  "error": "project not found",
+  "ok": false
+}
+
+Au caractère Ligne:1 : 1
++ Invoke-RestMethod -Method GET -Uri "$API/api/v1/projects/$PID/wallets ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation : (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebException
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+]633;D;1]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
+PS>clear
+]633;D;0]633;A]633;P;Cwd=D:\x5cBureau\x5cProjets\x5cAPIPS D:\Bureau\Projets\API> ]633;B
