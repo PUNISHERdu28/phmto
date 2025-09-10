@@ -1,0 +1,46 @@
+
+# =======================
+# Environnements virtuels
+# =======================
+.venv/
+venv/
+env/
+
+# ===============
+# Python cache
+# ===============
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ====================
+# Configs temporaires
+# ====================
+*.log
+*.pot
+*.pyproj
+*.sublime-project
+*.sublime-workspace
+
+# =================
+# IDE / Editeurs
+# =================
+.vscode/
+.idea/
+*.iml
+
+# ==================
+# OS / Divers
+# ==================
+.DS_Store
+Thumbs.db
+
+# ===================
+# Dossiers de données
+# ===================
+# On ignore tout le contenu de /data...
+data/*
+
+# ...sauf 1 projet exemple pour montrer la structure
+!data/exemple_projet/**
