@@ -5,8 +5,9 @@ Compatible avec **bots Telegram 🤖**, **front-end UI 💻**, et intégrations 
 
 ---
 
-## ✨ Nouveautés (v3.5)
+## ✨ Nouveautés (v3.6)
 
+- 👨‍💻 **Scripts de lancement** : `install-start.sh | install-start.ps1`
 - 🌐 **Multi-cluster** : `CLUSTER=devnet|testnet|mainnet` + override possible par requête (`cluster`, `rpc_url`).
 - 🔑 **Clés API par cluster** : `API_KEY_DEVNET`, `API_KEY_TESTNET`, `API_KEY_MAINNET`.
 - 📂 **Projets** : création, listing, détail, suppression, import/export JSON.
