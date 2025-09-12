@@ -22,7 +22,35 @@ Compatible avec **bots Telegram 🤖**, **front-end UI 💻**, et intégrations 
 ---
 
 
-## 🚀 Installation
+## 🚀 Installation Automatisé  **Scripts de lancement** : `install-start.sh | install-start.ps1`
+
+Dans un répertoire ouvert via un terminal: executer
+
+Pour **Windows**
+```powershell
+.\install-start.ps1
+```
+
+Vérifier :
+```powershell
+curl http://localhost:8000/health
+```
+---
+
+Pour Distrib **Linux**
+```bash
+./install-start.ps1
+```
+
+Vérifier :
+```bash
+curl http://localhost:8000/health
+```
+---
+
+## 🚀 Installation Manuelle
+
+Exécuter la séquence de commande dans un terminal ouvert dans un répertoire
 
 ### Windows PowerShell
 ```powershell
