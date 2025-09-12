@@ -201,7 +201,7 @@ def create_project():
     if not name:
         return jsonify({"ok": False, "error": "name is required"}), 400
     base = current_app.config["DATA_DIR"]
-    pr = nouveau_projet(name, base_dir=base)  # utilise service existant
+    pr = nouveau_projet(name, dossier_base=base) # utilise service existant
     # enrichir
     obj = pr.to_dict()
     obj["created_at"] = obj.get("created_at") or _now_iso()
@@ -282,7 +282,8 @@ def import_project():
     base = current_app.config["DATA_DIR"]
     # Recréer projet
     name = (data.get("name") or data.get("project", {}).get("name") or "Imported Project").strip()
-    pr = nouveau_projet(name, base_dir=base)
+    pr = nouveau_projet(name, dossier_base=base)
+
     # Injecter wallets si fournis
     wallets = data.get("wallets") or data.get("wallets_file", {}).get("wallets") or []
     if wallets:
