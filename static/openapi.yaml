@@ -8,8 +8,8 @@ info:
     et gestion de token avec création via Pump.fun.
 
 servers:
-  - url: http://localhost:8000
-    description: Local
+  - url: /
+    description: Same origin
 
 tags:
   - name: Health

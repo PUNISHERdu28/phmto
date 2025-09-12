@@ -24,7 +24,7 @@ $env:API_KEY_DEVNET="dev-secret"
 $env:DATA_DIR="./data"
 
 # 6. Lance l'application Flask (app.py doit exister à la racine)
-python app.py
+python -m flask run --port=8000
 
 # 7. (Optionnel) Vérifie que l'API est bien accessible avec curl
 # curl http://localhost:8000/health
