@@ -28,13 +28,51 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
-.swagger-ui * {
+/* Fix white text on white background issues */
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .opblock .opblock-summary,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-ui .response-col_description,
+.swagger-ui .response-col_status,
+.swagger-ui .model-title,
+.swagger-ui .prop-name,
+.swagger-ui .prop-type,
+.swagger-ui input[type="text"],
+.swagger-ui textarea,
+.swagger-ui select {
+  color: var(--swagger-text-primary) !important;
+  background-color: var(--swagger-bg-secondary) !important;
+}
+
+.swagger-ui input[type="text"],
+.swagger-ui textarea {
+  border: 1px solid var(--swagger-border) !important;
+}
+
+/* Main container and text fixes */
+.swagger-ui .wrapper {
+  background: var(--swagger-bg-primary) !important;
+}
+
+.swagger-ui .info,
+.swagger-ui .scheme-container,
+.swagger-ui .loading-container {
   color: var(--swagger-text-primary) !important;
 }
 
-/* Main container */
-.swagger-ui .wrapper {
-  background: var(--swagger-bg-primary) !important;
+/* Fix all white text issues */
+.swagger-ui p,
+.swagger-ui div,
+.swagger-ui span,
+.swagger-ui label,
+.swagger-ui small {
+  color: var(--swagger-text-primary) !important;
+}
+
+.swagger-ui .markdown p,
+.swagger-ui .renderedMarkdown p {
+  color: var(--swagger-text-secondary) !important;
 }
 
 /* =================================

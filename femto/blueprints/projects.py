@@ -177,10 +177,16 @@ def _project_dir(base: str, project_id: str) -> Path:
         raise FileNotFoundError("project not found")
     return Path(p)
 
-def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None) -> dict:
+def _mask_private_key(private_key: str) -> str:
+    """Masque une clé privée en gardant les premiers/derniers caractères."""
+    if not private_key or len(private_key) < 10:
+        return "***masked***"
+    return f"{private_key[:6]}***...***{private_key[-4:]}"
+
+def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None, show_private=False) -> dict:
     """
     Normalise le rendu JSON d'un wallet pour v3.6 : id, name, address, balance_sol?, created_at.
-    🔒 SÉCURISÉ - Les clés privées ne sont JAMAIS exposées dans les réponses API.
+    🔒 SÉCURISÉ - Les clés privées sont masquées par défaut.
     🔥 FIX CRITIQUE: Plus de substring [:8] - ID complet pour sécurité.
     """
     # 🔒 SÉCURITÉ CRITIQUE: Utiliser ID complet - AUCUN substring dangereux
@@ -195,12 +201,24 @@ def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None) -> dict:
         "address": w.get("address") or w.get("pubkey"),
         "created_at": w.get("created_at") or w.get("created") or None,
     }
+    
     if include_balance and out["address"]:
         try:
             sol = get_balance_sol(out["address"], rpc_url=rpc_url or "")
             out["balance_sol"] = sol
         except Exception as e:
             out["balance_error"] = str(e)
+    
+    # Gestion des clés privées selon le contexte
+    private_key = w.get("private_key") or w.get("private_key_base58_64") or w.get("secret")
+    if private_key:
+        if show_private:
+            out["private_key"] = private_key
+            out["private_key_json_64"] = w.get("private_key_json_64", [])
+        else:
+            # Masquer la clé pour les listes publiques
+            out["private_key_masked"] = _mask_private_key(private_key)
+    
     return out
 
 @bp.post("")

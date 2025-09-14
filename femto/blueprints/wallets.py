@@ -395,7 +395,7 @@ def transfer_from_wallet_id(wallet_id: str):
 @bp.post("/projects/<project_id>/wallets")
 @require_api_key
 def create_wallets(project_id: str):
-    """ Génère N wallets pour un projet donné, persiste la nouvelle liste et renvoie les adresses créées. """
+    """ Génère N wallets pour un projet donné, persiste la nouvelle liste et renvoie la structure complète. """
     data = request.get_json(force=True, silent=True) or {}
     try:
         n = int(data.get("n") or 1)
@@ -403,14 +403,58 @@ def create_wallets(project_id: str):
         return jsonify({"ok": False, "error": "n must be integer"}), 400
     if n <= 0 or n > 1000:
         return jsonify({"ok": False, "error": "n must be in 1..1000"}), 400
+    
     base = current_app.config["DATA_DIR"]
     pdir = find_project_dir(base, project_id)
     if not pdir:
         return jsonify({"ok": False, "error": "project not found"}), 404
+    
     pr = load_project(pdir)
     new_ws = generate_wallets(pr, n)
     save_project(pr, dossier_base=base)
-    return jsonify({"ok": True, "created": len(new_ws), "wallets": [w.address for w in new_ws]}), 201
+    
+    # Import de la fonction de formatage depuis projects
+    # Créer la structure de wallet avec clés privées masquées
+    def _mask_private_key(private_key: str) -> str:
+        """Masque une clé privée en gardant les premiers/derniers caractères."""
+        if not private_key or len(private_key) < 10:
+            return "***masked***"
+        return f"{private_key[:6]}***...***{private_key[-4:]}"
+    
+    formatted_wallets = []
+    for w in new_ws:
+        # Récupérer les attributs du wallet
+        wallet_id = getattr(w, "id", None) or getattr(w, "wallet_id", None)
+        wallet_name = getattr(w, "name", None)
+        wallet_address = getattr(w, "address", None)
+        created_at = getattr(w, "created_at", None)
+        private_key = getattr(w, "private_key", None) or getattr(w, "secret", None)
+        
+        # Formater le wallet avec clé masquée
+        formatted_wallet = {
+            "id": wallet_id,
+            "name": wallet_name,
+            "address": wallet_address,
+            "created_at": created_at,
+            "balance_sol": 0,  # Sera calculé si nécessaire
+            "private_key_masked": _mask_private_key(private_key) if private_key else "***no_key***"
+        }
+        
+        # Ajouter le solde si possible
+        if wallet_address:
+            try:
+                client, rpc_url = _rpc_client_from_config()
+                formatted_wallet["balance_sol"] = get_balance_sol(wallet_address, rpc_url=rpc_url)
+            except:
+                formatted_wallet["balance_sol"] = 0
+        
+        formatted_wallets.append(formatted_wallet)
+    
+    return jsonify({
+        "ok": True, 
+        "created": len(new_ws), 
+        "wallets": formatted_wallets
+    }), 201
 
 @bp.get("/wallets/<address>/balance")
 @require_api_key
@@ -473,6 +517,44 @@ def delete_wallet(project_id: str, address: str):
         "backup": str(backup_path),
     }), 200
 
+
+@bp.get("/wallets/<wallet_id>/details")
+@require_api_key
+def wallet_details(wallet_id: str):
+    """
+    🔓 ENDPOINT SÉCURISÉ - Récupère les détails COMPLETS d'un wallet incluant la clé privée.
+    Utiliser avec précaution - expose la clé privée en clair !
+    """
+    base = current_app.config["DATA_DIR"]
+    project_id = request.args.get("project_id")  # Optionnel pour filtrer
+    
+    # Trouver le wallet par son ID
+    result = _find_wallet_by_id(base, wallet_id, project_id)
+    if not result:
+        return jsonify({"ok": False, "error": "wallet not found"}), 404
+    
+    project, wallet, project_dir = result
+    
+    # Import de la fonction de formatage depuis projects
+    # Import direct de la fonction (copier localement pour éviter circular imports)
+    
+    # Résoudre RPC pour le solde
+    client, rpc_url = _rpc_client_from_config()
+    
+    # Formater le wallet AVEC clé privée (show_private=True)
+    wallet_details = _ensure_wallet_render(
+        wallet, 
+        include_balance=True, 
+        rpc_url=rpc_url,
+        show_private=True  # 🔓 CLÉ PRIVÉE VISIBLE
+    )
+    
+    return jsonify({
+        "ok": True,
+        "wallet": wallet_details,
+        "project_id": project.project_id,
+        "rpc_url": rpc_url
+    })
 
 @bp.get("/wallets/<wallet_id>/tokens")
 @require_api_key
