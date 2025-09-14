@@ -10,7 +10,7 @@ import os
 load_dotenv()
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURRENT_DIR)
-from config import load_settings
+from conrad.config import load_settings
 
 def create_app() -> Flask:
     app = Flask(__name__)

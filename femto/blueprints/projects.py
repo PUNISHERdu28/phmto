@@ -3,21 +3,16 @@ import os
 import json
 from flask import Blueprint, current_app, request, jsonify
 from middleware.auth import require_api_key
-from api_utils import iter_project_dirs, find_project_dir
+from conrad.api_utils import iter_project_dirs, find_project_dir
 
 # services "vendorisés"
 from rug.src.project_service import nouveau_projet, save_project, load_project, generate_wallets
 from rug.src.wallet_service import get_balance_sol
-from config import resolve_rpc
+from conrad.config import resolve_rpc
 
 from pathlib import Path
 from services.backups import backup_project, move_project_to_trash
 from services.fileio import ensure_dir
-
-from pathlib import Path
-from flask import Blueprint, current_app, request, jsonify
-from api_utils import iter_project_dirs, find_project_dir
-from rug.src.project_service import nouveau_projet, save_project, load_project
 
 
 bp = Blueprint("projects", __name__, url_prefix="/api/v1/projects")
@@ -66,15 +61,18 @@ def get_project(project_id: str):
 def create_wallets(project_id: str):
     data = request.get_json(force=True, silent=True) or {}
     try:
-        # Si n est explicitement fourni comme 0, ne pas le transformer en 1
-        if "n" in data:
+        # Accept both 'count' (canonical) and 'n' (legacy) parameters
+        # Priority: count > n > default(1)
+        if "count" in data:
+            n = int(data["count"])
+        elif "n" in data:
             n = int(data["n"])
         else:
-            n = 1  # valeur par défaut seulement si n n'est pas fourni
+            n = 1  # default value when neither provided
     except ValueError:
-        return jsonify({"ok": False, "error": "n must be integer"}), 400
+        return jsonify({"ok": False, "error": "count/n must be integer"}), 400
     if n < 1 or n > 1000:
-        return jsonify({"ok": False, "error": "n must be in 1..1000"}), 400
+        return jsonify({"ok": False, "error": "count/n must be in 1..1000"}), 400
 
     base = current_app.config["DATA_DIR"]
     pdir = find_project_dir(base, project_id)
@@ -156,7 +154,7 @@ def get_wallet_detail(project_id: str, address: str):
         balance = 0
 
     # Masquer les clés privées pour la sécurité  
-    def _mask_private_key(private_key: str) -> str:
+    def _mask_private_key(private_key: str | None) -> str:
         if not private_key or len(private_key) < 10:
             return "***secured***"
         return f"{private_key[:6]}***...***{private_key[-4:]}"
@@ -560,7 +558,7 @@ def rename_wallet(wallet_id: str):
             if pd.get("wallets"):
                 from rug.src.models import WalletExport
                 wallet_instances = []
-                for w in pd.get("wallets"):
+                for w in (pd.get("wallets") or []):
                     if isinstance(w, dict):
                         # Convertir dict vers WalletExport avec gestion des champs manquants
                         wallet_data = {

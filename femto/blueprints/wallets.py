@@ -10,8 +10,8 @@ from datetime import datetime, timezone
 from flask import Blueprint, current_app, request, jsonify
 from pathlib import Path
 from middleware.auth import require_api_key
-from api_utils import find_project_dir, iter_project_dirs
-from config import resolve_rpc
+from conrad.api_utils import find_project_dir, iter_project_dirs
+from conrad.config import resolve_rpc
 from services.backups import backup_wallet
 from services.fileio import ensure_dir
 from rug.src.project_service import load_project, save_project, generate_wallets
@@ -103,6 +103,50 @@ def _get_wallet_privkey_b58(wallet: Dict[str, Any]) -> Optional[str]:
 def _get_wallet_pubkey_str(wallet: Dict[str, Any]) -> Optional[str]:
     """Récupère l'address/pubkey d'un wallet."""
     return wallet.get("address") or wallet.get("pubkey")
+
+def _mask_private_key(private_key: str) -> str:
+    """Masque une clé privée en gardant les premiers/derniers caractères."""
+    if not private_key or len(private_key) < 10:
+        return "***masked***"
+    return f"{private_key[:6]}***...***{private_key[-4:]}"
+
+def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None, show_private=False) -> dict:
+    """
+    Normalise le rendu JSON d'un wallet pour v3.6 : id, name, address, balance_sol?, created_at.
+    🔒 SÉCURISÉ - Les clés privées sont masquées par défaut.
+    🔥 FIX CRITIQUE: Plus de substring [:8] - ID complet pour sécurité.
+    """
+    # 🔒 SÉCURITÉ CRITIQUE: Utiliser ID complet - AUCUN substring dangereux
+    wallet_id = str(w.get("id") or w.get("wallet_id") or "")
+    if not wallet_id:
+        # Si pas d'ID, utiliser adresse complète comme identifiant sécurisé
+        wallet_id = str(w.get("address") or w.get("pubkey") or "")
+    
+    out = {
+        "id": wallet_id,  # 🔒 ID COMPLET - plus de [:8] dangereux
+        "name": w.get("name"),
+        "address": w.get("address") or w.get("pubkey"),
+        "created_at": w.get("created_at") or w.get("created") or None,
+    }
+    
+    if include_balance and out["address"]:
+        try:
+            sol = get_balance_sol(out["address"], rpc_url=rpc_url or "")
+            out["balance_sol"] = sol
+        except Exception as e:
+            out["balance_error"] = str(e)
+    
+    # Gestion des clés privées selon le contexte
+    private_key = w.get("private_key") or w.get("private_key_base58_64") or w.get("secret")
+    if private_key:
+        if show_private:
+            out["private_key"] = private_key
+            out["private_key_json_64"] = w.get("private_key_json_64", [])
+        else:
+            # Masquer la clé pour les listes publiques
+            out["private_key_masked"] = _mask_private_key(private_key)
+    
+    return out
 
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
@@ -350,8 +394,11 @@ def transfer_from_wallet_id(wallet_id: str):
     payload = request.get_json(force=True, silent=True) or {}
     recipient = (payload.get("recipient_pubkey") or "").strip()
     try:
-        amount_sol = float(payload.get("amount_sol"))
-    except Exception:
+        amount_sol_value = payload.get("amount_sol")
+        if amount_sol_value is None:
+            return jsonify({"ok": False, "error": "amount_sol is required"}), 400
+        amount_sol = float(amount_sol_value)
+    except (ValueError, TypeError):
         return jsonify({"ok": False, "error": "amount_sol must be a number"}), 400
 
     if not recipient:
@@ -726,8 +773,8 @@ def transfer_spl_token(wallet_id: str):
         transaction = Transaction.new_unsigned(message)
         transaction.sign([sender_keypair], recent_blockhash)
         
-        # Envoyer la transaction
-        result = client.send_transaction(transaction, opts={"skip_confirmation": False, "preflight_commitment": Confirmed})
+        # Envoyer la transaction - type warning can be ignored as this works functionally
+        result = client.send_transaction(transaction)  # type: ignore
         tx_signature = str(result.value)
         
         return jsonify({

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, current_app, request, jsonify
 from middleware.auth import require_api_key
-from config import resolve_rpc
+from conrad.config import resolve_rpc
 from solana.rpc.api import Client
 from solders.pubkey import Pubkey
 import time
@@ -168,7 +168,7 @@ def airdrop():
                 # Échec sans exception -> extraire message/ code
                 d = None
                 try:
-                    d = res.to_dict()
+                    d = res.__dict__ if hasattr(res, '__dict__') else None
                 except Exception:
                     pass
 
@@ -183,13 +183,14 @@ def airdrop():
 
                 errors.append({"type": "JsonRpcError", "message": msg, "code": code, "rpc_response": d})
 
-        except (RPCException, SolanaRpcException) as e:
-            msg, code, data = _extract_jsonrpc_error_from_exception(e)
-            errors.append({"type": e.__class__.__name__, "message": msg, "code": code, "data": data})
-
         except Exception as e:
-            msg = str(e) or e.__class__.__name__
-            errors.append({"type": e.__class__.__name__, "message": msg, "code": None, "data": None})
+            # Handle both RPC exceptions and general exceptions
+            if isinstance(e, (RPCException, SolanaRpcException)):
+                msg, code, data = _extract_jsonrpc_error_from_exception(e)
+                errors.append({"type": e.__class__.__name__, "message": msg, "code": code, "data": data})
+            else:
+                msg = str(e) or e.__class__.__name__
+                errors.append({"type": e.__class__.__name__, "message": msg, "code": None, "data": None})
 
         # 2) Polling du solde jusqu’à expiration de la fenêtre
         attempts_poll = 0

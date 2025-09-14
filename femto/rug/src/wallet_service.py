@@ -29,14 +29,19 @@ def get_sol_price_usd(timeout: float = 5.0) -> float:
 
 def get_balance_sol(address: str, rpc_url: str = "https://api.mainnet-beta.solana.com") -> float:
     """
-    Retourne le solde en SOL (commitment 'confirmed' pour inclure les TX récentes).
-    Soulève une exception si l'adresse est invalide ou si la RPC renvoie une erreur.
+    🛡️ ROBUST - Retourne le solde en SOL avec retry logic et timeout.
+    Commitment 'confirmed' pour inclure les TX récentes.
+    Soulève une exception si l'adresse est invalide ou si toutes les tentatives échouent.
     """
-    c = Client(rpc_url)
+    from conrad.config import create_robust_rpc_client, rpc_retry_with_backoff
     from solana.rpc.commitment import Confirmed
-    resp = c.get_balance(Pubkey.from_string(address), commitment=Confirmed)
-    lamports = int(resp.value)  # ✅ .value est un int directement
-    return lamports / LAMPORTS_PER_SOL
+    
+    def _fetch_balance():
+        c = create_robust_rpc_client(rpc_url, timeout=15)
+        resp = c.get_balance(Pubkey.from_string(address), commitment=Confirmed)
+        return int(resp.value) / LAMPORTS_PER_SOL
+    
+    return rpc_retry_with_backoff(_fetch_balance, max_retries=2, base_delay=0.5)
 
 def fetch_wallets_balances(project: Project, rpc_url: str, price_usd: float) -> Dict[str, Tuple[Optional[float], Optional[float]]]:
     """
@@ -166,7 +171,7 @@ def get_spl_token_accounts(wallet_address: str, rpc_url: str = "https://api.main
                     if mint_info.value and mint_info.value.data:
                         mint_data = mint_info.value.data
                         if isinstance(mint_data, list) and len(mint_data) >= 2:
-                            mint_raw = base64.b64decode(mint_data[0])
+                            mint_raw = base64.b64decode(str(mint_data[0]))
                         else:
                             mint_raw = bytes(mint_data)
                         

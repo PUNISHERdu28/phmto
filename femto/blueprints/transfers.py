@@ -3,7 +3,7 @@
 from decimal import Decimal
 from flask import Blueprint, current_app, request, jsonify
 from middleware.auth import require_api_key
-from config import resolve_rpc
+from conrad.config import resolve_rpc
 from solana.rpc.api import Client
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
@@ -69,7 +69,7 @@ def transfer_sol():
 # =====================
 
 from pathlib import Path
-from api_utils import iter_project_dirs, find_project_dir
+from conrad.api_utils import iter_project_dirs, find_project_dir
 from rug.src.project_service import load_project, save_project
 
 def _derive_wallet_id(addr: str) -> str:
@@ -116,7 +116,7 @@ def transfer_from_wallet_id(wallet_id: str):
     recipient = (data.get("recipient_pubkey") or "").strip()
     amt = data.get("amount_sol")
     try:
-        amt = float(amt)
+        amt = float(amt) if amt is not None else 0.0
         if amt <= 0:
             raise ValueError
         Pubkey.from_string(recipient)

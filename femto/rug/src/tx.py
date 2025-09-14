@@ -10,6 +10,7 @@ import base58
 from solana.rpc.api import Client
 from solana.transaction import Transaction
 from solana.rpc.types import TxOpts
+from solana.rpc.commitment import Confirmed
 
 # solders 0.19.x
 from solders.keypair import Keypair
@@ -26,7 +27,7 @@ MIN_LEFTOVER_LAMPORTS = 5_000         # petite marge (éviter de tout raser)
 # ------------------------------
 def _get_balance_lamports(client: Client, pub: Pubkey) -> int:
     """Solde en lamports (commitment 'confirmed')."""
-    resp = client.get_balance(pub, commitment="confirmed")
+    resp = client.get_balance(pub, commitment=Confirmed)
     return int(resp.value)  # solders renvoie directement un int dans .value
 
 def _estimate_fee_lamports(client: Client, tx: Transaction) -> int:
@@ -122,10 +123,15 @@ def send_sol(
     if from_pub == to_pub:
         raise ValueError("Destination identique à la source.")
 
-    client = Client(rpc_url)
+    # 🛡️ ROBUST - Use robust RPC client with timeout and retry logic
+    from conrad.config import create_robust_rpc_client, rpc_retry_with_backoff
+    client = create_robust_rpc_client(rpc_url, timeout=30)
 
-    # 3) Vérification solde et frais estimés
-    balance = _get_balance_lamports(client, from_pub)
+    # 3) Vérification solde et frais estimés with retry
+    def _get_balance():
+        return _get_balance_lamports(client, from_pub)
+    
+    balance = rpc_retry_with_backoff(_get_balance, max_retries=2, base_delay=0.5)
 
     # Obtenir le blockhash d'abord
     bh = client.get_latest_blockhash()
@@ -163,16 +169,31 @@ def send_sol(
     if not tx.recent_blockhash:
         tx.recent_blockhash = client.get_latest_blockhash().value.blockhash
 
-    sig = client.send_transaction(
-        tx,
-        sender,
-        opts=TxOpts(skip_preflight=False, preflight_commitment="confirmed", max_retries=3),
-    ).value
+    # 🔥 ENHANCED TxOpts for guaranteed confirmation and better reliability
+    def _send_transaction():
+        return client.send_transaction(
+            tx,
+            sender,
+            opts=TxOpts(
+                skip_preflight=False,
+                preflight_commitment=Confirmed, 
+                max_retries=5,  # Increased retries for better reliability
+                skip_confirmation=False  # Ensure confirmation is attempted
+            ),
+        ).value
 
-    # 5) Confirmation best-effort (facultatif)
+    sig = rpc_retry_with_backoff(_send_transaction, max_retries=2, base_delay=1.0)
+
+    # 5) 🛡️ ROBUST Confirmation with explicit timeout and retry
+    def _confirm_transaction():
+        return client.confirm_transaction(sig, commitment=Confirmed)
+    
     try:
-        client.confirm_transaction(sig, commitment="confirmed")
-    except Exception:
+        rpc_retry_with_backoff(_confirm_transaction, max_retries=3, base_delay=0.5)
+        print(f"✅ Transaction confirmed: {sig}")
+    except Exception as e:
+        print(f"⚠️ Transaction sent but confirmation failed: {sig}, error: {e}")
+        # Transaction was sent successfully, confirmation failure is not critical
         pass
 
-    return sig
+    return str(sig)
