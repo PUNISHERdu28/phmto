@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, current_app, request, jsonify
 from pathlib import Path
 from middleware.auth import require_api_key
-from api_utils import find_project_dir
+from api_utils import find_project_dir, iter_project_dirs
 from config import resolve_rpc
 from services.backups import backup_wallet
 from services.fileio import ensure_dir
@@ -63,15 +63,13 @@ def _projects_root(base_dir: str) -> Path:
 
 
 def _list_project_dirs(base_dir: str) -> List[Path]:
-    root = _projects_root(base_dir)
-    if not root.exists():
-        return []
-    return [d for d in root.iterdir() if d.is_dir()]
+    """Utilise la fonction officielle iter_project_dirs."""
+    return [Path(d) for d in iter_project_dirs(base_dir)]
 
 
 def _find_wallet_by_id(base_dir: str, wallet_id: str) -> Optional[Tuple[Any, Dict[str, Any], Path]]:
     """
-    Scan de tous les projets en DATA_DIR pour trouver un wallet par son ID.
+    Scan de tous les projets en DATA_DIR pour trouver un wallet par son ID ou address.
     Retour: (project_obj, wallet_dict, project_dir) | None
     """
     for pdir in _list_project_dirs(base_dir):
@@ -80,8 +78,15 @@ def _find_wallet_by_id(base_dir: str, wallet_id: str) -> Optional[Tuple[Any, Dic
             pd = pr.to_dict() or {}
             wallets = pd.get("wallets") or []
             for w in wallets:
+                # Résolution multiple: id, wallet_id, ou address complète
                 wid = str(w.get("id") or w.get("wallet_id") or "")
-                if wid == str(wallet_id):
+                addr = str(w.get("address") or w.get("pubkey") or "")
+                addr_short = addr[:8] if addr else ""
+                
+                # Correspondances: id exact, address complète, ou 8 premiers caractères d'address
+                if (wid == str(wallet_id) or 
+                    addr == str(wallet_id) or 
+                    addr_short == str(wallet_id)):
                     return pr, w, pdir
         except Exception:
             continue
@@ -129,7 +134,7 @@ def _sign_and_send_transfer(client: RpcClient, sender_kp: Keypair, recipient_b58
             lamports=lamports,
         )
     )
-    recent_blockhash = _get_latest_blockhash(client)
+    recent_blockhash = _get_latest_blockhash_hash(client)
     msg = Message.new_with_blockhash(
         [ix],
         payer=sender_kp.pubkey(),

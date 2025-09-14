@@ -66,10 +66,14 @@ def get_project(project_id: str):
 def create_wallets(project_id: str):
     data = request.get_json(force=True, silent=True) or {}
     try:
-        n = int(data.get("n") or 1)
+        # Si n est explicitement fourni comme 0, ne pas le transformer en 1
+        if "n" in data:
+            n = int(data["n"])
+        else:
+            n = 1  # valeur par défaut seulement si n n'est pas fourni
     except ValueError:
         return jsonify({"ok": False, "error": "n must be integer"}), 400
-    if n <= 0 or n > 1000:
+    if n < 1 or n > 1000:
         return jsonify({"ok": False, "error": "n must be in 1..1000"}), 400
 
     base = current_app.config["DATA_DIR"]
@@ -312,14 +316,17 @@ def import_project():
         wallet_instances = []
         for w in wallets:
             if isinstance(w, dict):
-                # Mapper les champs attendus
-                wallet_instances.append(WalletExport(
-                    address=w.get("address") or w.get("pubkey", ""),
-                    private_key_base58_64=w.get("private_key_base58_64") or w.get("private_key") or w.get("secret", ""),
-                    private_key_json_64=w.get("private_key_json_64", []),
-                    public_key_hex=w.get("public_key_hex", ""),
-                    private_key_hex_32=w.get("private_key_hex_32", "")
-                ))
+                # Mapper les champs attendus avec support pour les anciens formats
+                wallet_data = {
+                    'address': w.get("address") or w.get("pubkey", ""),
+                    'private_key_base58_64': w.get("private_key_base58_64") or w.get("private_key") or w.get("secret", ""),
+                    'private_key_json_64': w.get("private_key_json_64", []),
+                    'public_key_hex': w.get("public_key_hex", ""),
+                    'private_key_hex_32': w.get("private_key_hex_32", ""),
+                    'name': w.get("name"),
+                    'id': w.get("id") or w.get("wallet_id")
+                }
+                wallet_instances.append(WalletExport(**wallet_data))
         pr.wallets = wallet_instances
     save_project(pr, dossier_base=base)
     return jsonify({"ok": True, "project_id": pr.project_id, "name": pr.name, "wallets": len(pr.to_dict().get("wallets") or [])})
@@ -344,9 +351,26 @@ def rename_wallet(wallet_id: str):
                 w["name"] = new_name
                 changed = True
         if changed:
+            # Assurer que les wallets sont des instances WalletExport correctes
             if pd.get("wallets"):
                 from rug.src.models import WalletExport
-                pr.wallets = [WalletExport(**w) if isinstance(w, dict) else w for w in pd.get("wallets")]
+                wallet_instances = []
+                for w in pd.get("wallets"):
+                    if isinstance(w, dict):
+                        # Convertir dict vers WalletExport avec gestion des champs manquants
+                        wallet_data = {
+                            'address': w.get('address') or w.get('pubkey', ''),
+                            'private_key_base58_64': w.get('private_key_base58_64') or w.get('private_key', ''),
+                            'private_key_json_64': w.get('private_key_json_64', []),
+                            'public_key_hex': w.get('public_key_hex', ''),
+                            'private_key_hex_32': w.get('private_key_hex_32', ''),
+                            'name': w.get('name'),
+                            'id': w.get('id') or w.get('wallet_id')
+                        }
+                        wallet_instances.append(WalletExport(**wallet_data))
+                    else:
+                        wallet_instances.append(w)
+                pr.wallets = wallet_instances
             save_project(pr, dossier_base=base)
             return jsonify({"ok": True, "wallet_id": wallet_id, "new_name": new_name})
     return jsonify({"ok": False, "error": "wallet not found"}), 404
@@ -362,8 +386,14 @@ def wallet_detail(wallet_id: str):
         pr = load_project(pdir)
         pd = pr.to_dict() or {}
         for w in (pd.get("wallets") or []):
-            wid = str(w.get("id") or w.get("wallet_id") or (w.get("address") or "")[:8])
-            if wid == str(wallet_id):
+            wid = str(w.get("id") or w.get("wallet_id") or "")
+            addr = str(w.get("address") or w.get("pubkey") or "")
+            addr_short = addr[:8] if addr else ""
+            
+            # Résolution multiple: id exact, address complète, ou premiers 8 caractères  
+            if (wid == str(wallet_id) or 
+                addr == str(wallet_id) or 
+                addr_short == str(wallet_id)):
                 return jsonify({"ok": True, "wallet": _ensure_wallet_render(w, include_balance=include_balance, rpc_url=rpc)})
     return jsonify({"ok": False, "error": "wallet not found"}), 404
 

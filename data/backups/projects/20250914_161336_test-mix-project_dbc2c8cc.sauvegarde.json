@@ -1,0 +1,19 @@
+{
+  "type": "project_backup",
+  "timestamp": "20250914_161336",
+  "project": {
+    "project_id": "dbc2c8cc",
+    "name": "Test Mix Project",
+    "slug": "test-mix-project"
+  },
+  "wallets": [
+    {
+      "address": "9GJrLUhnequsaMqLn4HWnf56YQ9Whc41BothMChizo5j",
+      "private_key": null
+    },
+    {
+      "address": "AaZLbbgQXZeFb9fXM1qt8gQaaxTwfpiGYxkG66xfr3UL",
+      "private_key": null
+    }
+  ]
+}

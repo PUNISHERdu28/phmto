@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass, field, asdict
 from typing import List, Optional, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 def new_project_id() -> str:
@@ -14,6 +14,17 @@ class WalletExport:
     private_key_json_64: List[int]
     public_key_hex: str
     private_key_hex_32: str
+    id: Optional[str] = None
+    name: Optional[str] = None
+    created_at: Optional[str] = None
+    
+    def __post_init__(self):
+        """Génère un ID stable basé sur l'adresse si non fourni."""
+        if not self.id:
+            self.id = self.address[:8] if self.address else ""
+        if not self.created_at:
+            from datetime import datetime, timezone
+            self.created_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 @dataclass
 class TokenMetadata:

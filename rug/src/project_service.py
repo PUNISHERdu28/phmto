@@ -30,8 +30,17 @@ def nouveau_projet(nom: str, dossier_base: Path | str = "./data") -> Project:
 
 def load_project(path: Path | str) -> Project:
     data = read_json(Path(path) / "project.json")
-    # reconstruction simple :
-    wallets = [WalletExport(**w) for w in data.get("wallets", [])]
+    # reconstruction simple avec gestion des anciens formats :
+    wallets = []
+    for w in data.get("wallets", []):
+        if isinstance(w, dict):
+            # Gérer les anciens formats sans champ id
+            wallet_data = w.copy()
+            wallets.append(WalletExport(**wallet_data))
+        else:
+            # Déjà un WalletExport ou autre
+            wallets.append(w)
+    
     token = TokenMetadata(**data["token"])
     pumpfun = PumpFunConfig(**data["pumpfun"])
     return Project(
@@ -57,7 +66,9 @@ def generate_wallets(project: Project, n: int) -> List[WalletExport]:
     new_ws: List[WalletExport] = []
     for _ in range(n):
         d = generate_wallet()
-        new_ws.append(WalletExport(**d))
+        wallet = WalletExport(**d)
+        # S'assurer que l'id est généré correctement via __post_init__
+        new_ws.append(wallet)
     project.wallets.extend(new_ws)
     return new_ws
 
@@ -111,12 +122,14 @@ def import_wallets_from_lines(project: Project, lines: List[str]) -> List[Wallet
         if secret_b58 is None:
             secret_b58 = base58.b58encode(bytes(secret_json)).decode()
 
-        imported.append(WalletExport(
+        wallet = WalletExport(
             address=addr,
             private_key_base58_64=secret_b58,
             private_key_json_64=secret_json,
             public_key_hex=pub32.hex(),
             private_key_hex_32=priv32.hex(),
-        ))
+        )
+        # L'id sera généré automatiquement via __post_init__
+        imported.append(wallet)
     project.wallets.extend(imported)
     return imported
