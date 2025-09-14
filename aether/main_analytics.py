@@ -13,8 +13,8 @@ from export_handler import ExportHandler
 
 # Page config
 st.set_page_config(
-    page_title="AI Data Analysis Tool",
-    page_icon="📊",
+    page_title="🌟 Aether - AI Divine Analysis",
+    page_icon="🔮",
     layout="wide",
     initial_sidebar_state="expanded"
 )
