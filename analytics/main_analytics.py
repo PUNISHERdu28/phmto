@@ -5,11 +5,11 @@ import os
 from typing import Optional
 import traceback
 
-# Import our utility classes
-from utils.data_processor import DataProcessor
-from utils.ai_analyzer import AIAnalyzer
-from utils.visualization import VisualizationGenerator
-from utils.export_handler import ExportHandler
+# Import our utility classes (imports directs dans le même dossier)
+from data_processor import DataProcessor
+from ai_analyzer import AIAnalyzer
+from visualization import VisualizationGenerator
+from export_handler import ExportHandler
 
 # Page config
 st.set_page_config(
