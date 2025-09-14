@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{config.app_name}}</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('swaggerui_blueprint.static', filename='swagger-ui-bundle.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static_files', filename='swagger-dark.css') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('swaggerui_blueprint.static', filename='favicon-32x32.png') }}" sizes="32x32" />
+  <link rel="icon" type="image/png" href="{{ url_for('swaggerui_blueprint.static', filename='favicon-16x16.png') }}" sizes="16x16" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin:0;
+      background: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="{{ url_for('swaggerui_blueprint.static', filename='swagger-ui-bundle.js') }}"></script>
+  <script src="{{ url_for('swaggerui_blueprint.static', filename='swagger-ui-standalone-preset.js') }}"></script>
+  <script>
+    window.onload = function() {
+      const ui = SwaggerUIBundle({
+        url: "{{config.url}}",
+        dom_id: '#swagger-ui',
+        deepLinking: {{config.deepLinking|tojson}},
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "{{config.layout}}",
+        docExpansion: "{{config.docExpansion}}",
+        filter: {{config.filter|tojson}},
+        showExtensions: {{config.showExtensions|tojson}},
+        showCommonExtensions: {{config.showCommonExtensions|tojson}},
+        displayOperationId: {{config.displayOperationId|tojson}},
+        displayRequestDuration: {{config.displayRequestDuration|tojson}},
+        showMutatedRequest: {{config.showMutatedRequest|tojson}},
+        supportedSubmitMethods: {{config.supportedSubmitMethods|tojson}},
+        tryItOutEnabled: {{config.tryItOutEnabled|tojson}},
+        validatorUrl: {{config.validatorUrl|tojson}},
+        syntaxHighlight: {{config.syntaxHighlight|tojson}}
+      });
+    };
+  </script>
+</body>
+</html>

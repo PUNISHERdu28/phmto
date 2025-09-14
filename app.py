@@ -4,7 +4,6 @@ import os, sys
 from flask import Flask, jsonify
 from datetime import datetime
 from dotenv import load_dotenv
-from flask_swagger_ui import get_swaggerui_blueprint
 from flask import send_from_directory
 import os
 
@@ -28,16 +27,76 @@ def create_app() -> Flask:
     app.register_blueprint(tokens_bp)
 
 
-        # --- Swagger UI ---
-    SWAGGER_URL = "/docs"                     # URL où la doc sera servie
-    API_SPEC_PATH = "/static/openapi.yaml"    # où se trouve le openapi.yaml
+    # --- Swagger UI ---
 
-    swaggerui_bp = get_swaggerui_blueprint(
-        SWAGGER_URL,
-        API_SPEC_PATH,
-        config={"app_name": "Rug API (Solana)"}  # titre dans l'UI
-    )
-    app.register_blueprint(swaggerui_bp, url_prefix=SWAGGER_URL)
+    # Route personnalisée pour Swagger UI avec thème sombre intégré
+    @app.route('/docs')
+    def swagger_ui_with_dark_theme():
+        from flask import render_template_string
+        template = """
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Rug API v3.6 (Solana Wallet Management)</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+  <link rel="stylesheet" type="text/css" href="/static/swagger-dark.css" />
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist/favicon-16x16.png" sizes="16x16" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin:0;
+      background: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      const ui = SwaggerUIBundle({
+        url: "/static/openapi.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        docExpansion: "none",
+        filter: true,
+        showExtensions: true,
+        showCommonExtensions: true,
+        displayOperationId: false,
+        displayRequestDuration: true,
+        showMutatedRequest: true,
+        supportedSubmitMethods: ["get", "post", "put", "delete", "patch"],
+        tryItOutEnabled: true,
+        validatorUrl: null,
+        syntaxHighlight: {
+          activated: true,
+          theme: "tomorrow-night"
+        }
+      });
+    };
+  </script>
+</body>
+</html>
+        """
+        return render_template_string(template)
 
         # Servir les fichiers statiques (openapi.yaml)
     @app.route("/static/<path:filename>")

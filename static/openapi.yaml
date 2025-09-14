@@ -1,11 +1,63 @@
 openapi: 3.0.3
 info:
-  title: Phmto API (Solana Wallet)
-  version: "3.5.0"
-  description: >
-    API Flask pour gérer des projets & wallets Solana (devnet/mainnet).
-    Inclut airdrop (devnet), transferts, mix, consolidation, import/export,
-    et gestion de token avec création via Pump.fun.
+  title: Rug API v3.6 (Solana Wallet Management)
+  version: "3.6.0"
+  description: |
+    ## 🚀 Rug API v3.6 - Solana Wallet Management Platform
+
+    **Une API Flask complète et moderne pour gérer des projets et wallets Solana sur devnet/mainnet/testnet.**
+
+    ### 🎯 Fonctionnalités principales
+    
+    **💼 Gestion de projets :**
+    - Création, modification et suppression de projets
+    - Système de sauvegarde automatique et d'import/export
+    - Organisation hiérarchique des wallets par projet
+    
+    **🔐 Gestion de wallets :**
+    - Génération automatique de wallets Solana
+    - Import de wallets existants via clé privée
+    - Consultation des soldes en temps réel
+    - Sauvegarde sécurisée avec chiffrement
+    
+    **💸 Système de transferts avancé :**
+    - Airdrop SOL sur devnet (faucet intégré)
+    - Transferts SOL entre wallets avec gestion des frais
+    - Mixing automatique (stratégies random/roundrobin)
+    - Consolidation intelligente des soldes
+    
+    **🪙 Gestion de tokens :**
+    - Configuration des métadonnées de tokens
+    - Intégration Pump.fun pour création de tokens
+    - Support complet des standards SPL Token
+    
+    ### 🛡️ Sécurité & Authentication
+    - Authentication par clé API (header `x-api-key`)
+    - Chiffrement des clés privées
+    - Logs d'audit complets
+    - Support multi-cluster (devnet/testnet/mainnet)
+    
+    ### 🔧 Configuration réseau
+    - RPC personnalisables par cluster
+    - Gestion automatique des timeouts
+    - Retry logic intégrée pour la résilience
+    
+    ### 📊 Monitoring & Logs
+    - Endpoint `/health` pour surveillance
+    - Logs détaillés des transactions
+    - Métriques de performance
+    
+    **⚡ Version 3.6 - Nouveautés :**
+    - Interface Swagger UI avec thème sombre
+    - Améliorations de performance
+    - Documentation API enrichie
+    - Support étendu des métadonnées de tokens
+  contact:
+    name: Rug API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
 
 servers:
   - url: http://localhost:8000
@@ -26,52 +78,276 @@ paths:
   /health:
     get:
       tags: [Health]
-      summary: Ping de santé
+      summary: 🩺 Vérification de l'état de santé de l'API
+      description: |
+        Endpoint de monitoring pour vérifier que l'API fonctionne correctement.
+        Retourne des informations sur la configuration actuelle et l'état des services.
+      operationId: healthCheck
+      security: []  # Pas d'authentification requise
       responses:
-        "200": { description: OK }
+        "200":
+          description: ✅ API opérationnelle
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: true }
+                  service: { type: string, example: "solana-api" }
+                  time: { type: string, format: date-time, example: "2025-09-14T17:30:00.000Z" }
+                  data_dir: { type: string, example: "./data" }
+                  default_rpc: { type: string, example: "https://api.devnet.solana.com" }
+                  cluster: { type: string, example: "devnet" }
+                  api_key_set: { type: boolean, example: false }
+              examples:
+                devnet_config:
+                  summary: Configuration Devnet
+                  value:
+                    ok: true
+                    service: "solana-api"
+                    time: "2025-09-14T17:30:00.000Z"
+                    data_dir: "./data"
+                    default_rpc: "https://api.devnet.solana.com"
+                    cluster: "devnet"
+                    api_key_set: false
+                mainnet_config:
+                  summary: Configuration Mainnet avec API Key
+                  value:
+                    ok: true
+                    service: "solana-api"
+                    time: "2025-09-14T17:30:00.000Z"
+                    data_dir: "./data"
+                    default_rpc: "https://api.mainnet-beta.solana.com"
+                    cluster: "mainnet"
+                    api_key_set: true
+        "503":
+          description: ❌ Service temporairement indisponible
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: false }
+                  error: { type: string, example: "Database connection failed" }
+                  service: { type: string, example: "solana-api" }
+              examples:
+                service_down:
+                  summary: Service indisponible
+                  value:
+                    ok: false
+                    error: "Database connection failed"
+                    service: "solana-api"
 
   # ===================== Projects =====================
 
   /api/v1/projects:
     get:
       tags: [Projects]
-      summary: Lister tous les projets
+      summary: 📂 Lister tous les projets
+      description: |
+        Récupère la liste complète de tous les projets avec leurs informations de base.
+        Chaque projet inclut le nombre de wallets associés et la date de création.
+      operationId: listProjects
       responses:
         "200":
-          description: Liste de projets
+          description: ✅ Liste des projets récupérée avec succès
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  ok: { type: boolean }
+                  ok: { type: boolean, example: true }
                   projects:
                     type: array
                     items:
                       $ref: "#/components/schemas/ProjectSummary"
+              examples:
+                projects_list:
+                  summary: Liste de projets avec wallets
+                  value:
+                    ok: true
+                    projects:
+                      - project_id: "c3a1d93e-4b5f-4e8a-9f7e-1d2e3f4g5h6i"
+                        name: "Mon Projet DeFi"
+                        slug: "mon-projet-defi"
+                        created_at: "2025-09-14T10:00:00.000Z"
+                        wallets: 25
+                      - project_id: "588958bc-7a9b-4c1d-8e5f-2g3h4i5j6k7l"
+                        name: "Trading Bot v2"
+                        slug: "trading-bot-v2"
+                        created_at: "2025-09-13T14:30:00.000Z"
+                        wallets: 100
+                empty_list:
+                  summary: Aucun projet existant
+                  value:
+                    ok: true
+                    projects: []
+        "401":
+          description: 🔒 Authentication requise
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                missing_api_key:
+                  summary: Clé API manquante
+                  value:
+                    ok: false
+                    error: "Authentication required"
+                    message: "API key missing in x-api-key header"
+        "500":
+          description: 💥 Erreur serveur interne
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                server_error:
+                  summary: Erreur de base de données
+                  value:
+                    ok: false
+                    error: "Internal server error"
+                    message: "Unable to fetch projects from database"
     post:
       tags: [Projects]
-      summary: Créer un projet
+      summary: ➕ Créer un nouveau projet
+      description: |
+        Crée un nouveau projet Solana avec un nom unique. 
+        Le projet servira de conteneur pour organiser les wallets et tokens.
+        
+        **Règles de validation :**
+        - Nom obligatoire, 3-100 caractères
+        - Caractères autorisés : lettres, chiffres, espaces, tirets
+        - Le slug est généré automatiquement
+      operationId: createProject
       requestBody:
         required: true
+        description: Informations du nouveau projet
         content:
           application/json:
             schema:
               type: object
               required: [name]
               properties:
-                name: { type: string }
+                name: 
+                  type: string
+                  minLength: 3
+                  maxLength: 100
+                  pattern: "^[a-zA-Z0-9\\s\\-_À-ÿ]+$"
+                  example: "Mon Nouveau Projet DeFi"
+                  description: "Nom du projet (3-100 caractères, lettres/chiffres/espaces/tirets)"
+            examples:
+              defi_project:
+                summary: Projet DeFi
+                value:
+                  name: "Mon Nouveau Projet DeFi"
+              trading_bot:
+                summary: Bot de trading
+                value:
+                  name: "Bot Trading Solana v3"
+              nft_collection:
+                summary: Collection NFT
+                value:
+                  name: "Ma Collection NFT Exclusive"
       responses:
         "201":
-          description: Projet créé
+          description: ✅ Projet créé avec succès
+          headers:
+            Location:
+              description: URL du projet créé
+              schema:
+                type: string
+                example: "/api/v1/projects/c3a1d93e-4b5f-4e8a-9f7e-1d2e3f4g5h6i"
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  ok: { type: boolean }
+                  ok: { type: boolean, example: true }
                   project:
                     $ref: "#/components/schemas/ProjectDetail"
+              examples:
+                new_project:
+                  summary: Nouveau projet créé
+                  value:
+                    ok: true
+                    project:
+                      project_id: "c3a1d93e-4b5f-4e8a-9f7e-1d2e3f4g5h6i"
+                      name: "Mon Nouveau Projet DeFi"
+                      slug: "mon-nouveau-projet-defi"
+                      created_at: "2025-09-14T17:45:00.000Z"
+                      wallets: []
+                      token:
+                        name: null
+                        symbol: null
+                        description: null
+                        image_uri: null
+                        website: null
+                        twitter: null
+                        telegram: null
+        "400":
+          description: ❌ Données de requête invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalid_name:
+                  summary: Nom invalide
+                  value:
+                    ok: false
+                    error: "Validation failed"
+                    message: "Project name must be 3-100 characters"
+                    details:
+                      field: "name"
+                      value: "ab"
+                      constraint: "minLength: 3"
+                duplicate_name:
+                  summary: Nom déjà utilisé
+                  value:
+                    ok: false
+                    error: "Conflict"
+                    message: "A project with this name already exists"
+                    existing_project_id: "588958bc-7a9b-4c1d-8e5f-2g3h4i5j6k7l"
+        "401":
+          description: 🔒 Authentication requise
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "413":
+          description: 📏 Payload trop volumineux
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                payload_too_large:
+                  summary: Données trop volumineuses
+                  value:
+                    ok: false
+                    error: "Payload too large"
+                    message: "Request body exceeds maximum size limit"
+        "429":
+          description: ⏳ Trop de requêtes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                rate_limited:
+                  summary: Limite de débit dépassée
+                  value:
+                    ok: false
+                    error: "Rate limit exceeded"
+                    message: "Too many requests, please try again later"
+                    retry_after: 60
+        "500":
+          description: 💥 Erreur serveur interne
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/projects/{project_id}:
     parameters:
@@ -353,24 +629,177 @@ paths:
   /api/v1/airdrop:
     post:
       tags: [Transfers]
-      summary: Airdrop de SOL (Devnet seulement)
+      summary: 🪂 Airdrop de SOL (Devnet uniquement)
+      description: |
+        Demande un airdrop de SOL depuis le faucet Solana Devnet vers une adresse spécifiée.
+        
+        **⚠️ Limitations importantes :**
+        - **Uniquement sur Devnet** - Ne fonctionne pas sur Mainnet/Testnet
+        - Limite standard du faucet Solana (généralement 1-2 SOL par requête)
+        - Throttling possible en cas de requêtes fréquentes
+        - L'adresse doit être une clé publique Solana valide
+        
+        **💡 Utilisation recommandée :**
+        - Tests et développement sur Devnet
+        - Alimenter des wallets de test
+        - Préparer des transferts ou interactions avec smart contracts
+      operationId: requestAirdrop
+      security: []  # Pas d'authentification requise pour l'airdrop
       requestBody:
         required: true
+        description: Paramètres de l'airdrop
         content:
           application/json:
             schema:
               type: object
               required: [address]
               properties:
-                address: { type: string }
+                address:
+                  type: string
+                  pattern: "^[1-9A-HJ-NP-Za-km-z]{32,44}$"
+                  example: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+                  description: "Adresse Solana valide (Base58, 32-44 caractères)"
                 sol:
                   type: number
                   format: float
-                  default: 1
+                  minimum: 0.001
+                  maximum: 5.0
+                  default: 1.0
+                  example: 1.0
+                  description: "Montant de SOL à airdropper (0.001-5.0 SOL)"
+            examples:
+              standard_airdrop:
+                summary: Airdrop standard 1 SOL
+                value:
+                  address: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+                  sol: 1.0
+              small_amount:
+                summary: Petit montant pour tests
+                value:
+                  address: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1"
+                  sol: 0.1
+              max_airdrop:
+                summary: Montant maximum
+                value:
+                  address: "8WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAXXX"
+                  sol: 2.0
       responses:
-        "200": { description: OK }
-        "400": { description: Requête invalide }
-        "500": { description: Erreur faucet }
+        "200":
+          description: ✅ Airdrop réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: true }
+                  address: { type: string, example: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM" }
+                  amount_sol: { type: number, format: float, example: 1.0 }
+                  signature: { type: string, example: "3KWAxZKKKK1HHJMJKgU8CdLHJKxKKHhzJJhJHj3hJJhJHj3hJJhJHj3hJJhJHj3hJJhJHj3hJJhJHj3hJJ" }
+                  cluster: { type: string, example: "devnet" }
+                  rpc_url: { type: string, example: "https://api.devnet.solana.com" }
+                  confirmation: { type: string, example: "finalized" }
+              examples:
+                successful_airdrop:
+                  summary: Airdrop réussi
+                  value:
+                    ok: true
+                    address: "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
+                    amount_sol: 1.0
+                    signature: "5j4KWAxZ1KKK1HHJMJKgU8CdLHJKxKKHhzJJhJHj3hJJhJHj3hJJhJHj3hJJhJHj3hJJhJHj3hJJhJHj3hJJ7Y"
+                    cluster: "devnet"
+                    rpc_url: "https://api.devnet.solana.com"
+                    confirmation: "finalized"
+        "400":
+          description: ❌ Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalid_address:
+                  summary: Adresse Solana invalide
+                  value:
+                    ok: false
+                    error: "Invalid address"
+                    message: "The provided address is not a valid Solana public key"
+                    details:
+                      field: "address"
+                      value: "invalid_address_123"
+                      expected_format: "Base58 encoded, 32-44 characters"
+                invalid_amount:
+                  summary: Montant invalide
+                  value:
+                    ok: false
+                    error: "Invalid amount"
+                    message: "SOL amount must be between 0.001 and 5.0"
+                    details:
+                      field: "sol"
+                      value: 10.0
+                      min: 0.001
+                      max: 5.0
+                mainnet_not_supported:
+                  summary: Cluster non supporté
+                  value:
+                    ok: false
+                    error: "Cluster not supported"
+                    message: "Airdrop only available on devnet cluster"
+                    current_cluster: "mainnet"
+                    supported_clusters: ["devnet"]
+        "429":
+          description: ⏳ Trop de requêtes - Rate limiting du faucet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                rate_limited:
+                  summary: Limite de débit faucet dépassée
+                  value:
+                    ok: false
+                    error: "Rate limit exceeded"
+                    message: "Too many airdrop requests, please try again later"
+                    retry_after_seconds: 300
+                    last_airdrop: "2025-09-14T17:40:00.000Z"
+        "500":
+          description: 💥 Erreur du faucet Solana
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                faucet_error:
+                  summary: Faucet indisponible
+                  value:
+                    ok: false
+                    error: "Faucet error"
+                    message: "Solana devnet faucet is temporarily unavailable"
+                    details:
+                      faucet_status: "unavailable"
+                      suggested_action: "Try again in a few minutes or use alternative faucet"
+                network_error:
+                  summary: Erreur réseau RPC
+                  value:
+                    ok: false
+                    error: "Network error"
+                    message: "Unable to connect to Solana devnet RPC"
+                    details:
+                      rpc_url: "https://api.devnet.solana.com"
+                      error_type: "connection_timeout"
+        "503":
+          description: 🚫 Service temporairement indisponible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                service_maintenance:
+                  summary: Maintenance programmée
+                  value:
+                    ok: false
+                    error: "Service unavailable"
+                    message: "Airdrop service is under maintenance"
+                    estimated_duration_minutes: 30
+                    maintenance_reason: "Scheduled devnet upgrade"
 
   /api/v1/wallets/{wallet_id}/transfer:
     parameters:
@@ -526,6 +955,36 @@ components:
       name: x-api-key
 
   schemas:
+
+    ErrorResponse:
+      type: object
+      required: [ok, error, message]
+      properties:
+        ok: 
+          type: boolean
+          example: false
+          description: Indique que la requête a échoué
+        error:
+          type: string
+          example: "Validation failed"
+          description: Type d'erreur principal
+        message:
+          type: string
+          example: "The provided data is invalid"
+          description: Message d'erreur détaillé pour l'utilisateur
+        details:
+          type: object
+          description: Informations supplémentaires sur l'erreur (optionnel)
+          additionalProperties: true
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-09-14T17:45:00.000Z"
+          description: Horodatage de l'erreur
+        request_id:
+          type: string
+          example: "req_123e4567-e89b-12d3-a456-426614174000"
+          description: Identifiant unique de la requête pour le débogage
 
     ProjectSummary:
       type: object
