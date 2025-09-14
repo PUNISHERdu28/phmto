@@ -13,8 +13,8 @@ from export_handler import ExportHandler
 
 # Page config
 st.set_page_config(
-    page_title="🌟 Aether - AI Divine Analysis",
-    page_icon="🔮",
+    page_title="⚫ VOID - The All-Seeing Analyst",
+    page_icon="👁️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -40,8 +40,9 @@ def main():
     """Main Streamlit application"""
     
     # Header
-    st.title("📊 AI-Powered Data Analysis Tool")
-    st.markdown("Upload your data files and get instant insights with AI-powered analysis and interactive visualizations.")
+    st.title("⚫ VOID - The All-Seeing Data Analyst")
+    st.markdown("***Manipulate destiny through data insights - Member of the God Hand***")
+    st.markdown("Upload your data and witness the dark power of analytical divination.")
     
     # Initialize utilities
     data_processor, ai_analyzer, viz_generator, export_handler = get_utilities()

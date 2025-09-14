@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-📊 Lanceur Application Analytics IA
+⚔️ UBIK - The Analytics Oracle
 """
 import sys
 import os
@@ -11,7 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 # Lancer l'application Streamlit Analytics
 if __name__ == "__main__":
-    analytics_path = os.path.join(os.path.dirname(__file__), '..', 'analytics', 'main_analytics.py')
+    analytics_path = os.path.join(os.path.dirname(__file__), '..', 'void', 'main_analytics.py')
     
     cmd = [
         "streamlit", "run", analytics_path,
@@ -19,7 +19,7 @@ if __name__ == "__main__":
         "--server.address", "0.0.0.0"
     ]
     
-    print("🚀 Démarrage Application Analytics IA...")
-    print(f"📊 Interface disponible sur: http://0.0.0.0:5000")
+    print("⚔️ VOID - The All-Seeing awakens...")
+    print(f"👁️ Interface disponible sur: http://0.0.0.0:5000")
     
     subprocess.run(cmd)
