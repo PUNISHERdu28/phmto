@@ -214,7 +214,7 @@ Each generated wallet correctly contains:
 ---
 
 ## Test Environment
-- **API Version**: 3.5.0
+- **API Version**: 3.6.0
 - **Cluster**: Devnet (default)
 - **RPC**: https://api.devnet.solana.com
 - **Auth**: Disabled (REQUIRE_AUTH=false)

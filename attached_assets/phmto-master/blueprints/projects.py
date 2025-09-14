@@ -156,7 +156,7 @@ def delete_project(project_id: str):
 
 
 # =========================
-# V3.5 — Endpoints projets & wallets (création, liste, renommage, import/export)
+# V3.6 — Endpoints projets & wallets (création, liste, renommage, import/export)
 # =========================
 
 from datetime import datetime, timezone
@@ -175,7 +175,7 @@ def _project_dir(base: str, project_id: str) -> Path:
 
 def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None) -> dict:
     """
-    Normalise le rendu JSON d'un wallet pour v3.5 : id, name, address, balance_sol?, created_at, private_key.
+    Normalise le rendu JSON d'un wallet pour v3.6 : id, name, address, balance_sol?, created_at, private_key.
     """
     out = {
         "id": str(w.get("id") or w.get("wallet_id") or (w.get("address") or "")[:8]),

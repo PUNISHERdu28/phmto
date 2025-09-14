@@ -92,7 +92,7 @@ def token_reset(project_id: str):
 def token_create_pumpfun(project_id: str):
     """
     Crée réellement le token via Pump.fun.
-    Pour v3.5: appel minimal, renvoie 400 si API key absente.
+    Pour v3.6: appel minimal, renvoie 400 si API key absente.
     """
     api_key = os.getenv("PUMPFUN_API_KEY")
     if not api_key:

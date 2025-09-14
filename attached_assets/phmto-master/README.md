@@ -1,11 +1,11 @@
-# ⚡ Solana Wallet API (Flask) — v3.5
+# ⚡ Solana Wallet API (Flask) — v3.6
 
 API Flask pour gérer des projets “wallet factory” sur Solana (**devnet/testnet/mainnet**), avec séparation **UI** / **métier**.  
 Compatible avec **bots Telegram 🤖**, **front-end UI 💻**, et intégrations externes.
 
 ---
 
-## ✨ Nouveautés (v3.5)
+## ✨ Nouveautés (v3.6)
 
 - 🌐 **Multi-cluster** : `CLUSTER=devnet|testnet|mainnet` + override possible par requête (`cluster`, `rpc_url`).
 - 🔑 **Clés API par cluster** : `API_KEY_DEVNET`, `API_KEY_TESTNET`, `API_KEY_MAINNET`.
@@ -53,7 +53,7 @@ Authorization: Bearer <votre_clé_api>
 
 ---
 
-## 📚 Endpoints principaux (OpenAPI v3.5)
+## 📚 Endpoints principaux (OpenAPI v3.6)
 
 ### 🩺 Santé
 - `GET /health`  
@@ -151,7 +151,7 @@ Consolide vers un wallet cible.
 🔨 Build
 ```bash
 
-docker build -t solana-wallet-api:v3.5 .
+docker build -t solana-wallet-api:v3.6 .
 ```
 ▶️ Run (mode devnet)
 ```bash
@@ -162,7 +162,7 @@ docker run -d \
   -e DATA_DIR=/data \
   -p 8000:8000 \
   -v $PWD/data:/data \
-  solana-wallet-api:v3.5
+  solana-wallet-api:v3.6
 ```
 ✅ Vérifier
 ```bash

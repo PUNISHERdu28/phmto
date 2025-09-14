@@ -59,7 +59,7 @@ def edit_token(token_id: str):
 
 
 # =========================
-# V3.5 — Token management for a project (edit/reset/create via Pump.fun)
+# V3.6 — Token management for a project (edit/reset/create via Pump.fun)
 # =========================
 from flask import current_app
 import os, requests
@@ -106,7 +106,7 @@ def token_reset(project_id: str):
 def token_create_pumpfun(project_id: str):
     """
     Crée réellement le token via Pump.fun.
-    Pour v3.5: appel minimal, renvoie 400 si API key absente.
+    Pour v3.6: appel minimal, renvoie 400 si API key absente.
     """
     api_key = os.getenv("PUMPFUN_API_KEY")
     if not api_key:

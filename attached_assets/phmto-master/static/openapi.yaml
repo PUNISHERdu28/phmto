@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Phmto API (Solana Wallet)
-  version: "3.5.0"
+  title: Rug API v3.6 (Solana Wallet Management)
+  version: "3.6.0"
   description: >
     API Flask pour gérer des projets & wallets Solana (devnet/mainnet).
     Inclut airdrop (devnet), transferts, mix, consolidation, import/export,
