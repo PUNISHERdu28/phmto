@@ -179,6 +179,83 @@ def get_wallet_detail(project_id: str, address: str):
     
     return jsonify(result)
 
+@bp.get("/<project_id>/wallets/<address>/export")
+@require_api_key
+def export_wallet_private_key(project_id: str, address: str):
+    """
+    🚨 ENDPOINT SÉCURISÉ - EXPORT DE CLÉ PRIVÉE 🚨
+    
+    Exporte la clé privée complète d'un wallet spécifique.
+    ATTENTION: Cet endpoint expose des données critiques !
+    
+    Paramètres requis:
+    - ?confirm=true : Confirmation explicite requise
+    
+    Usage: GET /api/v1/projects/{id}/wallets/{address}/export?confirm=true
+    """
+    import logging
+    from datetime import datetime
+    
+    # Vérification de confirmation obligatoire
+    confirm = request.args.get("confirm", "").lower()
+    if confirm != "true":
+        return jsonify({
+            "ok": False, 
+            "error": "Confirmation required",
+            "message": "Add ?confirm=true to export private key",
+            "security_warning": "This endpoint exposes sensitive private key data"
+        }), 400
+
+    # Log de sécurité
+    client_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent', 'Unknown')
+    timestamp = datetime.utcnow().isoformat()
+    
+    logging.warning(f"PRIVATE_KEY_EXPORT: address={address} project={project_id} ip={client_ip} time={timestamp}")
+    
+    base = current_app.config["DATA_DIR"]
+    pdir = find_project_dir(base, project_id)
+    if not pdir:
+        return jsonify({"ok": False, "error": "project not found"}), 404
+
+    pr = load_project(pdir)
+    wallet = None
+    for w in pr.wallets:
+        if w.address == address:
+            wallet = w
+            break
+    
+    if not wallet:
+        return jsonify({"ok": False, "error": "wallet not found"}), 404
+
+    # Récupérer toutes les informations de clés
+    private_key_b58 = getattr(wallet, "private_key", None) or getattr(wallet, "secret", None)
+    private_key_json = getattr(wallet, "private_key_json_64", [])
+    private_key_hex = getattr(wallet, "private_key_hex_32", None)
+
+    result = {
+        "ok": True,
+        "security_warning": "🚨 SENSITIVE DATA - Handle with extreme care 🚨",
+        "exported_at": timestamp,
+        "wallet": {
+            "id": getattr(wallet, "id", None) or getattr(wallet, "wallet_id", None),
+            "name": getattr(wallet, "name", None),
+            "address": wallet.address,
+            "created_at": getattr(wallet, "created_at", None),
+            "private_key_base58": private_key_b58,
+            "private_key_json_array": private_key_json,
+            "private_key_hex": private_key_hex
+        },
+        "security_notes": [
+            "Never share private keys via insecure channels",
+            "Store securely offline if needed",
+            "This export has been logged for security audit",
+            "Revoke wallet if compromised"
+        ]
+    }
+    
+    return jsonify(result)
+
 @bp.get("/<project_id>/wallets")
 @require_api_key
 def list_wallets(project_id: str):
