@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 import os, sys
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect
 from datetime import datetime
 from dotenv import load_dotenv
 from flask import send_from_directory
@@ -107,6 +107,15 @@ def create_app() -> Flask:
         static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
         return send_from_directory(static_dir, filename)
 
+    # Route racine qui redirige vers la documentation Swagger
+    @app.get("/")
+    def root():
+        return redirect("/docs", code=302)
+    
+    # Route favicon pour éliminer les erreurs 404
+    @app.get("/favicon.ico")
+    def favicon():
+        return redirect("https://unpkg.com/swagger-ui-dist/favicon-32x32.png", code=302)
     
     @app.get("/health")
     def health():

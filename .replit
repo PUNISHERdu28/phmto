@@ -20,19 +20,19 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Flask API"
+args = "Streamlit App"
 
 [[workflows.workflow]]
-name = "Flask API"
+name = "Streamlit App"
 author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "DATA_DIR=./data DEFAULT_RPC=https://api.devnet.solana.com CLUSTER=devnet REQUIRE_AUTH=false API_KEY=\"\" PORT=8000 python app.py"
-waitForPort = 8000
+args = "streamlit run main.py --server.port 5000"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[ports]]
 localPort = 5000
@@ -41,3 +41,7 @@ externalPort = 80
 [[ports]]
 localPort = 8000
 externalPort = 8000
+
+[[ports]]
+localPort = 44529
+externalPort = 3000
