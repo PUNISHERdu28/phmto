@@ -1,0 +1,90 @@
+[
+  {
+    "endpoint": "/health",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "details": "Health check working",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects",
+    "method": "POST",
+    "status_code": 201,
+    "success": true,
+    "details": "Project created: d7d19ded",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "details": "Listed 4 projects",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "details": "Project details retrieved",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded/wallets",
+    "method": "POST",
+    "status_code": 201,
+    "success": true,
+    "details": "Created 1 wallets",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded/wallets",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "details": "Listed 1 wallets",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded/wallets/2z5TXbyd4R9BSS5htjY41nEdu9SvboEuhUmSxchhvfKm/export",
+    "method": "GET",
+    "status_code": 400,
+    "success": true,
+    "details": "Security check working (export blocked)",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded/wallets/2z5TXbyd4R9BSS5htjY41nEdu9SvboEuhUmSxchhvfKm/export?confirm=true",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "details": "Export with confirmation working",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/airdrop",
+    "method": "POST",
+    "status_code": 400,
+    "success": false,
+    "details": "Airdrop failed: {\n  \"error\": \"airdrop allowed only on devnet\",\n  \"ok\": false,\n  \"rpc_url\": \"https://api.mainnet-beta.solana.com\"\n}\n",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded/token",
+    "method": "PATCH",
+    "status_code": 200,
+    "success": true,
+    "details": "Token metadata updated",
+    "timestamp": "2025-09-14 22:34:54"
+  },
+  {
+    "endpoint": "/api/v1/projects/d7d19ded/stats",
+    "method": "GET",
+    "status_code": 200,
+    "success": true,
+    "details": "Stats retrieved - 0 wallets",
+    "timestamp": "2025-09-14 22:34:55"
+  }
+]
