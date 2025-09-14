@@ -107,7 +107,7 @@ def list_wallets(project_id: str):
         item = {"address": w.address}
         if with_balance:
             try:
-                item["balance_sol"] = get_balance_sol(w.address, rpc_url=rpc)
+                item["balance_sol"] = get_balance_sol(w.address, rpc_url=rpc or "")
             except Exception as e:
                 item["balance_error"] = str(e)
         result.append(item)
@@ -171,7 +171,7 @@ def _project_dir(base: str, project_id: str) -> Path:
     p = find_project_dir(base, project_id)
     if not p:
         raise FileNotFoundError("project not found")
-    return p
+    return Path(p)
 
 def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None) -> dict:
     """
@@ -186,7 +186,7 @@ def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None) -> dict:
     }
     if include_balance and out["address"]:
         try:
-            sol = get_balance_sol(out["address"], rpc_url=rpc_url)
+            sol = get_balance_sol(out["address"], rpc_url=rpc_url or "")
             out["balance_sol"] = sol
         except Exception as e:
             out["balance_error"] = str(e)
@@ -201,7 +201,7 @@ def create_project():
     if not name:
         return jsonify({"ok": False, "error": "name is required"}), 400
     base = current_app.config["DATA_DIR"]
-    pr = nouveau_projet(name, base_dir=base)  # utilise service existant
+    pr = nouveau_projet(name, dossier_base=base)  # utilise service existant
     # enrichir
     obj = pr.to_dict()
     obj["created_at"] = obj.get("created_at") or _now_iso()
@@ -238,15 +238,32 @@ def rename_project(project_id: str):
     if not new_name:
         return jsonify({"ok": False, "error": "name is required"}), 400
     base = current_app.config["DATA_DIR"]
-    pdir = _project_dir(base, project_id)
-    pr = load_project(pdir)
-    pd = pr.to_dict() or {}
-    old_name = pd.get("name")
-    pd["name"] = new_name
-    pd["slug"] = slugify(new_name or "project")
-    # persist via model
-    pr.name = pd["name"]
-    pr.slug = pd["slug"]
+    try:
+        old_pdir = _project_dir(base, project_id)
+    except FileNotFoundError:
+        return jsonify({"ok": False, "error": "project not found"}), 404
+    
+    pr = load_project(old_pdir)
+    old_name = pr.name
+    new_slug = slugify(new_name or "project")
+    
+    # Mettre à jour le projet
+    pr.name = new_name
+    pr.slug = new_slug
+    
+    # Calculer le nouveau répertoire
+    from rug.src.project_service import _project_dir as calc_project_dir
+    new_pdir = calc_project_dir(base, pr)
+    
+    # Si le chemin change, déplacer atomiquement
+    if str(old_pdir) != str(new_pdir):
+        import shutil
+        # S'assurer que le répertoire de destination n'existe pas
+        if new_pdir.exists():
+            return jsonify({"ok": False, "error": "project with this name already exists"}), 409
+        shutil.move(str(old_pdir), str(new_pdir))
+    
+    # Sauvegarder le projet mis à jour
     save_project(pr, dossier_base=base)
     return jsonify({"ok": True, "project_id": pr.project_id, "old_name": old_name, "new_name": new_name})
 
@@ -255,7 +272,11 @@ def rename_project(project_id: str):
 def export_project(project_id: str):
     """Exporte un projet en JSON (brut lisible)."""
     base = current_app.config["DATA_DIR"]
-    pdir = _project_dir(base, project_id)
+    try:
+        pdir = _project_dir(base, project_id)
+    except FileNotFoundError:
+        return jsonify({"ok": False, "error": "project not found"}), 404
+    
     pr = load_project(pdir)
     obj = pr.to_dict() or {}
     obj["exported_at"] = _now_iso()
@@ -282,14 +303,24 @@ def import_project():
     base = current_app.config["DATA_DIR"]
     # Recréer projet
     name = (data.get("name") or data.get("project", {}).get("name") or "Imported Project").strip()
-    pr = nouveau_projet(name, base_dir=base)
+    pr = nouveau_projet(name, dossier_base=base)
     # Injecter wallets si fournis
     wallets = data.get("wallets") or data.get("wallets_file", {}).get("wallets") or []
     if wallets:
-        # Convertir en format attendu par model
-        pd = pr.to_dict()
-        pd["wallets"] = wallets
-        pr.wallets = wallets  # si attribut supporté
+        # Convertir les dicts en instances WalletExport sécurisées
+        from rug.src.models import WalletExport
+        wallet_instances = []
+        for w in wallets:
+            if isinstance(w, dict):
+                # Mapper les champs attendus
+                wallet_instances.append(WalletExport(
+                    address=w.get("address") or w.get("pubkey", ""),
+                    private_key_base58_64=w.get("private_key_base58_64") or w.get("private_key") or w.get("secret", ""),
+                    private_key_json_64=w.get("private_key_json_64", []),
+                    public_key_hex=w.get("public_key_hex", ""),
+                    private_key_hex_32=w.get("private_key_hex_32", "")
+                ))
+        pr.wallets = wallet_instances
     save_project(pr, dossier_base=base)
     return jsonify({"ok": True, "project_id": pr.project_id, "name": pr.name, "wallets": len(pr.to_dict().get("wallets") or [])})
 
@@ -313,7 +344,9 @@ def rename_wallet(wallet_id: str):
                 w["name"] = new_name
                 changed = True
         if changed:
-            pr.wallets = pd.get("wallets")
+            if pd.get("wallets"):
+                from rug.src.models import WalletExport
+                pr.wallets = [WalletExport(**w) if isinstance(w, dict) else w for w in pd.get("wallets")]
             save_project(pr, dossier_base=base)
             return jsonify({"ok": True, "wallet_id": wallet_id, "new_name": new_name})
     return jsonify({"ok": False, "error": "wallet not found"}), 404
@@ -360,25 +393,22 @@ def import_wallets(project_id: str):
     """Importe un ou plusieurs wallets via clés privées (base58 ou tableau JSON de 64 octets)."""
     data = request.get_json(force=True, silent=True) or {}
     base = current_app.config["DATA_DIR"]
-    pdir = _project_dir(base, project_id)
+    try:
+        pdir = _project_dir(base, project_id)
+    except FileNotFoundError:
+        return jsonify({"ok": False, "error": "project not found"}), 404
+    
     pr = load_project(pdir)
-    pd = pr.to_dict() or {}
-    wl = pd.get("wallets") or []
     keys = []
     if "private_key" in data:
         keys.append(data["private_key"])
     keys.extend(data.get("private_keys") or [])
-    imported = []
-    for key in keys:
-        priv = key
-        try:
-            # On stocke tel quel (base58 ou liste) et laisser le service générer l'address si nécessaire
-            w = {"private_key": priv}
-            wl.append(w)
-            imported.append(w)
-        except Exception:
-            continue
-    pd["wallets"] = wl
-    pr.wallets = wl
-    save_project(pr, dossier_base=base)
-    return jsonify({"ok": True, "imported": len(imported), "wallets": [ _ensure_wallet_render(w) for w in imported ]})
+    
+    # Utiliser le service sécurisé pour importer les wallets
+    from rug.src.project_service import import_wallets_from_lines
+    try:
+        imported = import_wallets_from_lines(pr, keys)
+        save_project(pr, dossier_base=base)
+        return jsonify({"ok": True, "imported": len(imported), "wallets": [w.address for w in imported]})
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"import failed: {str(e)}"}), 400
