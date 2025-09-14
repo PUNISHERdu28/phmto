@@ -20,31 +20,31 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Analytics IA"
+args = "VOID - The All-Seeing"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Solana API"
+args = "FEMTO - The Fallen Angel"
 
 [[workflows.workflow]]
-name = "Analytics IA"
+name = "VOID - The All-Seeing"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "streamlit run analytics/main_analytics.py --server.port 5000"
+args = "streamlit run void/main_analytics.py --server.port 5000"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
 
 [[workflows.workflow]]
-name = "Solana API"
+name = "FEMTO - The Fallen Angel"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python launchers/start_solana_api.py"
+args = "python ubik/start_solana_api.py"
 waitForPort = 8000
 
 [workflows.workflow.metadata]
