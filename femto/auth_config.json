@@ -1,0 +1,5 @@
+{
+  "auth_enabled": false,
+  "simple_password": "godhand123",
+  "note": "Pour activer l'auth, mettre auth_enabled: true et utiliser simple_password comme clé API"
+}
