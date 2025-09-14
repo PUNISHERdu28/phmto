@@ -126,8 +126,8 @@ def create_wallets(project_id: str):
 @require_api_key 
 def get_wallet_detail(project_id: str, address: str):
     """
-    Récupère les détails complets d'un wallet spécifique, y compris sa clé privée.
-    ATTENTION: Expose la clé privée complète - à utiliser avec précaution !
+    Récupère les détails d'un wallet spécifique SANS clé privée.
+    Pour des raisons de sécurité, les clés privées ne sont jamais exposées via API.
     """
     base = current_app.config["DATA_DIR"]
     pdir = find_project_dir(base, project_id)
@@ -155,6 +155,14 @@ def get_wallet_detail(project_id: str, address: str):
     except:
         balance = 0
 
+    # Masquer les clés privées pour la sécurité  
+    def _mask_private_key(private_key: str) -> str:
+        if not private_key or len(private_key) < 10:
+            return "***secured***"
+        return f"{private_key[:6]}***...***{private_key[-4:]}"
+
+    private_key = getattr(wallet, "private_key", None) or getattr(wallet, "secret", None)
+
     result = {
         "ok": True,
         "wallet": {
@@ -163,8 +171,8 @@ def get_wallet_detail(project_id: str, address: str):
             "address": wallet.address,
             "created_at": getattr(wallet, "created_at", None),
             "balance_sol": balance,
-            "private_key": getattr(wallet, "private_key", None) or getattr(wallet, "secret", None),
-            "private_key_json_64": getattr(wallet, "private_key_json_64", [])
+            "private_key_masked": _mask_private_key(private_key),
+            "security_note": "Private keys are never exposed via API for security reasons"
         },
         "rpc_used": rpc
     }
