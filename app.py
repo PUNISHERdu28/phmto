@@ -20,10 +20,12 @@ def create_app() -> Flask:
     from blueprints.wallets import bp as wallets_bp
     from blueprints.transfers import bp as transfers_bp
     from blueprints.utils import bp as utils_bp
+    from blueprints.tokens import bp_tokens as tokens_bp
     app.register_blueprint(projects_bp)
     app.register_blueprint(wallets_bp)
     app.register_blueprint(transfers_bp)
     app.register_blueprint(utils_bp)
+    app.register_blueprint(tokens_bp)
 
 
         # --- Swagger UI ---
