@@ -122,6 +122,55 @@ def create_wallets(project_id: str):
     
     return jsonify({"ok": True, "created": len(new_ws), "wallets": formatted_wallets}), 201
 
+@bp.get("/<project_id>/wallets/<address>")
+@require_api_key 
+def get_wallet_detail(project_id: str, address: str):
+    """
+    Récupère les détails complets d'un wallet spécifique, y compris sa clé privée.
+    ATTENTION: Expose la clé privée complète - à utiliser avec précaution !
+    """
+    base = current_app.config["DATA_DIR"]
+    pdir = find_project_dir(base, project_id)
+    if not pdir:
+        return jsonify({"ok": False, "error": "project not found"}), 404
+
+    pr = load_project(pdir)
+    wallet = None
+    for w in pr.wallets:
+        if w.address == address:
+            wallet = w
+            break
+    
+    if not wallet:
+        return jsonify({"ok": False, "error": "wallet not found"}), 404
+
+    # Récupérer solde en live
+    env_cluster = current_app.config.get("CLUSTER", "")
+    cluster_param = (request.args.get("cluster") or env_cluster or "").strip()
+    rpc_param = (request.args.get("rpc") or "").strip()
+    rpc = resolve_rpc(current_app.config["DEFAULT_RPC"], cluster_param, rpc_param)
+    
+    try:
+        balance = get_balance_sol(wallet.address, rpc_url=rpc or "")
+    except:
+        balance = 0
+
+    result = {
+        "ok": True,
+        "wallet": {
+            "id": getattr(wallet, "id", None) or getattr(wallet, "wallet_id", None),
+            "name": getattr(wallet, "name", None),
+            "address": wallet.address,
+            "created_at": getattr(wallet, "created_at", None),
+            "balance_sol": balance,
+            "private_key": getattr(wallet, "private_key", None) or getattr(wallet, "secret", None),
+            "private_key_json_64": getattr(wallet, "private_key_json_64", [])
+        },
+        "rpc_used": rpc
+    }
+    
+    return jsonify(result)
+
 @bp.get("/<project_id>/wallets")
 @require_api_key
 def list_wallets(project_id: str):
@@ -144,12 +193,20 @@ def list_wallets(project_id: str):
 
     result = []
     for w in pr.wallets:
-        item = {"address": w.address}
+        # Format uniforme avec détails comme dans la création
+        item = {
+            "id": getattr(w, "id", None) or getattr(w, "wallet_id", None),
+            "name": getattr(w, "name", None),
+            "address": w.address,
+            "created_at": getattr(w, "created_at", None)
+        }
         if with_balance:
             try:
                 item["balance_sol"] = get_balance_sol(w.address, rpc_url=rpc or "")
             except Exception as e:
                 item["balance_error"] = str(e)
+        else:
+            item["balance_sol"] = 0
         result.append(item)
 
     return jsonify({

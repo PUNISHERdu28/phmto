@@ -70,6 +70,18 @@
   color: var(--swagger-text-primary) !important;
 }
 
+/* FIX: Parameters section background - no more white background */
+.swagger-ui .parameters-container,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-ui .parameter__deprecated,
+.swagger-ui .parameter__in,
+.swagger-ui .parameters .parameter,
+.swagger-ui .table-container {
+  background-color: var(--swagger-bg-secondary) !important;
+  color: var(--swagger-text-primary) !important;
+}
+
 .swagger-ui .markdown p,
 .swagger-ui .renderedMarkdown p {
   color: var(--swagger-text-secondary) !important;

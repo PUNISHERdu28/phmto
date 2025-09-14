@@ -64,8 +64,13 @@ def save_project(project: Project, dossier_base: Path | str = "./data") -> Path:
 
 def generate_wallets(project: Project, n: int) -> List[WalletExport]:
     new_ws: List[WalletExport] = []
-    for _ in range(n):
+    # Compter les wallets existants pour continuer la numérotation
+    existing_count = len(project.wallets)
+    
+    for i in range(n):
         d = generate_wallet()
+        # Ajouter le nom automatique "Wallet 1", "Wallet 2", etc.
+        d["name"] = f"Wallet {existing_count + i + 1}"
         wallet = WalletExport(**d)
         # S'assurer que l'id est généré correctement via __post_init__
         new_ws.append(wallet)
