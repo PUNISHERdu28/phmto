@@ -24,7 +24,6 @@ from solders.keypair import Keypair
 from solders.pubkey import Pubkey
 from solders.system_program import transfer as sp_transfer, TransferParams
 from solders.message import Message
-from solders.transaction import Transaction
 from solana.rpc.api import Client as RpcClient     # ✅ bon client RPC
 
 from solana.rpc.api import Client as RpcClient
@@ -102,46 +101,26 @@ def _get_wallet_pubkey_str(wallet: Dict[str, Any]) -> Optional[str]:
     """Récupère l'address/pubkey d'un wallet."""
     return wallet.get("address") or wallet.get("pubkey")
 
-from solders.hash import Hash
-
-def _get_latest_blockhash_hash(client: RpcClient) -> Hash:
-    """
-    Récupère le dernier blockhash via solana-py et le convertit en solders.Hash.
-    Compatible solana-py ≥ 0.30 (objet) et fallback dict.
-    """
-    resp = client.get_latest_blockhash()
-    if hasattr(resp, "value") and hasattr(resp.value, "blockhash"):
-        bh = resp.value.blockhash
-    else:
-        try:
-            bh = resp["result"]["value"]["blockhash"]
-        except Exception:
-            raise RuntimeError(f"Unexpected get_latest_blockhash response: {resp}")
-    return Hash.from_string(str(bh))
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
-from solders.system_program import transfer as sp_transfer, TransferParams
-from solders.message import Message
-from solders.transaction import Transaction
 from solana.rpc.api import Client as RpcClient
+from rug.src.tx import send_sol
 
 def _sign_and_send_transfer(client: RpcClient, sender_kp: Keypair, recipient_b58: str, amount_sol: float) -> str:
-    lamports = int(amount_sol * 1_000_000_000)
-    ix = sp_transfer(
-        TransferParams(
-            from_pubkey=sender_kp.pubkey(),
-            to_pubkey=Pubkey.from_string(recipient_b58),
-            lamports=lamports,
-        )
+    """
+    Transfert SOL en utilisant la fonction send_sol qui fonctionne correctement.
+    """
+    # Convertir le keypair au format bytes array (ce que _keypair_from_any accepte)
+    sender_priv_bytes = list(bytes(sender_kp))
+    
+    # Appeler la fonction send_sol qui fonctionne
+    sig = send_sol(
+        debtor_private_key=sender_priv_bytes,
+        recipient_pubkey_b58=recipient_b58,
+        amount_sol=amount_sol,
+        rpc_url=client._provider.endpoint_uri
     )
-    recent_blockhash = _get_latest_blockhash_hash(client)
-    msg = Message.new_with_blockhash(
-        [ix],
-        payer=sender_kp.pubkey(),
-        blockhash=recent_blockhash
-    )
-    tx = Transaction([sender_kp], msg)        # signature via solders
-    sig = client.send_transaction(tx).value   # renvoie la signature base58 (solana>=0.30)
+    
     return str(sig)
 
 

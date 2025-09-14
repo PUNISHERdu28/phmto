@@ -5,8 +5,6 @@ rich==13.7.1
 pynacl==1.5.0
 base58==2.1.1
 python-slugify==8.0.4
-solana>=0.30,<0.35
-solders>=0.21,<0.23
 httpx==0.23.3
 construct-typing==0.5.6
 cachetools==4.2.4
@@ -26,8 +24,6 @@ pynacl
 python-dotenv
 python-slugify
 rich
-solana
-solders
 requests
 solana==0.34.2
 solders==0.21.0

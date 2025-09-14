@@ -1,4 +1,4 @@
-modules = ["python-3.11"]
+modules = ["python-3.11", "python3"]
 [agent]
 integrations = ["python_anthropic:1.0.0", "python_openai:1.0.0"]
 
@@ -41,7 +41,3 @@ externalPort = 80
 [[ports]]
 localPort = 8000
 externalPort = 8000
-
-[[ports]]
-localPort = 34641
-externalPort = 3000

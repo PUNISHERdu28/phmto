@@ -136,12 +136,15 @@ def transfer_from_wallet_id(wallet_id: str):
     ))
     # Construire Keypair à partir du base58 (ou array)
     try:
+        print(f"[DEBUG] transfer_from_wallet_id: About to construct Keypair")
         if isinstance(sender_priv, list):
             kp = Keypair.from_bytes(bytes(sender_priv))
         else:
             import base58 as _b58
             kp = Keypair.from_bytes(_b58.b58decode(sender_priv))
+        print(f"[DEBUG] transfer_from_wallet_id: Keypair constructed, calling send_sol")
         sig = send_sol(sender_priv, recipient, float(amt), client._provider.endpoint_uri)
+        print(f"[DEBUG] transfer_from_wallet_id: send_sol returned signature: {sig}")
         return jsonify({
             "ok": True,
             "from_wallet_id": wallet_id,
