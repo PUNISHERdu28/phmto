@@ -74,27 +74,34 @@ from rug.src.project_service import load_project, save_project
 
 def _derive_wallet_id(addr: str) -> str:
     """
-    Dérive un identifiant court et stable à partir d'une adresse publique.
-    Ici: 8 premiers caractères de l'adresse (suffit pour usage humain).
+    🚫 SUPPRIMÉ - Fonction dangereuse utilisée pour matching 8-chars.
+    Maintenant retourne l'adresse complète pour éviter collisions de sécurité.
     """
-    return (addr or "")[:8]
+    # 🔒 SÉCURITÉ: Plus de substring, correspondance exacte seulement
+    return addr or ""
 
 def _find_wallet_by_id_any(base_dir: str, wallet_id: str):
     """
-    Recherche un wallet par:
-      - champ 'id' si présent
-      - adresse exacte
-      - id dérivé (_derive_wallet_id)
+    🔒 SÉCURISÉ - Recherche wallet avec correspondances EXACTES uniquement.
+    Résolution sécurisée:
+      - champ 'id' exact si présent
+      - adresse exacte complète
     Retourne (project, wallet, project_dir) ou None.
     """
     for pdir in iter_project_dirs(base_dir):
-        pr = load_project(pdir)
-        pd = pr.to_dict() or {}
-        for w in (pd.get("wallets") or []):
-            addr = w.get("address") or w.get("pubkey")
-            wid = w.get("id") or w.get("wallet_id") or _derive_wallet_id(addr or "")
-            if str(wid) == str(wallet_id) or addr == wallet_id:
-                return pr, w, pdir
+        try:
+            pr = load_project(pdir)
+            pd = pr.to_dict() or {}
+            for w in (pd.get("wallets") or []):
+                # 🔒 SÉCURITÉ CRITIQUE: UNIQUEMENT correspondances EXACTES
+                wid = str(w.get("id") or w.get("wallet_id") or "")
+                addr = str(w.get("address") or w.get("pubkey") or "")
+                
+                # 🔒 CORRESPONDANCES EXACTES seulement - AUCUN substring
+                if (wid and wid == str(wallet_id)) or (addr and addr == str(wallet_id)):
+                    return pr, w, pdir
+        except Exception:
+            continue
     return None
 
 @bp.post("/wallets/<wallet_id>/transfer")

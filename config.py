@@ -45,6 +45,6 @@ def load_settings() -> Dict[str, str]:
         "DEFAULT_RPC": os.getenv("DEFAULT_RPC", "https://api.mainnet-beta.solana.com"),
         "API_KEY": os.getenv("API_KEY", ""),
         "CLUSTER": os.getenv("CLUSTER", ""),
-        "REQUIRE_AUTH": os.getenv("REQUIRE_AUTH", "false").lower() in ("1","true","yes"),
+        "REQUIRE_AUTH": str(os.getenv("REQUIRE_AUTH", "false").lower() in ("1","true","yes")),
     }
 

@@ -15,7 +15,7 @@ from config import resolve_rpc
 from services.backups import backup_wallet
 from services.fileio import ensure_dir
 from rug.src.project_service import load_project, save_project, generate_wallets
-from rug.src.wallet_service import get_balance_sol
+from rug.src.wallet_service import get_balance_sol, get_wallet_token_holdings
 # Ajouts pour les transactions Solana (solders)
 
 from solana.rpc.api import Client as RpcClient     # ✅ bon client RPC
@@ -66,26 +66,29 @@ def _list_project_dirs(base_dir: str) -> List[Path]:
     return [Path(d) for d in iter_project_dirs(base_dir)]
 
 
-def _find_wallet_by_id(base_dir: str, wallet_id: str) -> Optional[Tuple[Any, Dict[str, Any], Path]]:
+def _find_wallet_by_id(base_dir: str, wallet_id: str, project_id: Optional[str] = None) -> Optional[Tuple[Any, Dict[str, Any], Path]]:
     """
-    Scan de tous les projets en DATA_DIR pour trouver un wallet par son ID ou address.
+    🔒 SÉCURISÉ - Scan de tous les projets en DATA_DIR pour trouver un wallet par ID exact ou address complète.
+    ⚠️ PLUS de correspondance par 8 chars pour éviter les collisions de sécurité.
     Retour: (project_obj, wallet_dict, project_dir) | None
     """
     for pdir in _list_project_dirs(base_dir):
         try:
             pr = load_project(pdir)
             pd = pr.to_dict() or {}
+            
+            # Si project_id fourni, filtrer par projet
+            if project_id and pd.get("project_id") != project_id:
+                continue
+                
             wallets = pd.get("wallets") or []
             for w in wallets:
-                # Résolution multiple: id, wallet_id, ou address complète
+                # Résolution SÉCURISÉE: UNIQUEMENT id exact ou address complète
                 wid = str(w.get("id") or w.get("wallet_id") or "")
                 addr = str(w.get("address") or w.get("pubkey") or "")
-                addr_short = addr[:8] if addr else ""
                 
-                # Correspondances: id exact, address complète, ou 8 premiers caractères d'address
-                if (wid == str(wallet_id) or 
-                    addr == str(wallet_id) or 
-                    addr_short == str(wallet_id)):
+                # 🔒 SÉCURITÉ: Correspondances EXACTES seulement - pas de substring
+                if (wid and wid == str(wallet_id)) or (addr and addr == str(wallet_id)):
                     return pr, w, pdir
         except Exception:
             continue
@@ -469,3 +472,206 @@ def delete_wallet(project_id: str, address: str):
         "project_id": pr.project_id,
         "backup": str(backup_path),
     }), 200
+
+
+@bp.get("/wallets/<wallet_id>/tokens")
+@require_api_key
+def wallet_token_holdings(wallet_id: str):
+    """
+    💰 Récupère tous les holdings SPL tokens d'un wallet.
+    Retourne la liste des tokens avec balances, métadonnées et valeurs USD.
+    """
+    base = current_app.config["DATA_DIR"]
+    
+    # Trouver le wallet par son ID ou address
+    result = _find_wallet_by_id(base, wallet_id)
+    if not result:
+        return jsonify({"ok": False, "error": "wallet not found"}), 404
+    
+    project, wallet, project_dir = result
+    wallet_address = _get_wallet_pubkey_str(wallet)
+    
+    if not wallet_address:
+        return jsonify({"ok": False, "error": "wallet address not found"}), 400
+    
+    # Résoudre RPC
+    client, rpc_url = _rpc_client_from_config()
+    
+    try:
+        # Récupérer les holdings SPL tokens
+        holdings = get_wallet_token_holdings(wallet_address, rpc_url)
+        
+        # Ajouter les informations SOL également
+        sol_balance = _get_balance_sol_solders(client, wallet_address)
+        
+        # Calculer la valeur totale des holdings
+        total_value_usd = 0.0
+        token_count = len(holdings)
+        
+        for holding in holdings:
+            if holding.get("value_usd"):
+                total_value_usd += holding["value_usd"]
+        
+        return jsonify({
+            "ok": True,
+            "wallet_id": wallet_id,
+            "wallet_address": wallet_address,
+            "project_id": project.project_id,
+            "sol_balance": sol_balance,
+            "token_count": token_count,
+            "total_value_usd": total_value_usd if total_value_usd > 0 else None,
+            "tokens": holdings,
+            "rpc_url": rpc_url
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "ok": False, 
+            "error": f"Failed to fetch token holdings: {str(e)}",
+            "wallet_address": wallet_address,
+            "rpc_url": rpc_url
+        }), 500
+
+
+@bp.post("/wallets/<wallet_id>/transfer-token")
+@require_api_key
+def transfer_spl_token(wallet_id: str):
+    """
+    🔄 Transfert de tokens SPL depuis un wallet vers un autre.
+    Critical pour redistribuer les memecoins créés.
+    """
+    data = request.get_json(force=True, silent=True) or {}
+    
+    recipient = data.get("recipient")
+    token_address = data.get("token_address")
+    amount = data.get("amount")
+    
+    if not recipient:
+        return jsonify({"ok": False, "error": "recipient address required"}), 400
+    if not token_address:
+        return jsonify({"ok": False, "error": "token_address required"}), 400
+    if not amount or amount <= 0:
+        return jsonify({"ok": False, "error": "amount must be > 0"}), 400
+    
+    base = current_app.config["DATA_DIR"]
+    
+    # Trouver le wallet source
+    result = _find_wallet_by_id(base, wallet_id)
+    if not result:
+        return jsonify({"ok": False, "error": "wallet not found"}), 404
+    
+    project, wallet, project_dir = result
+    wallet_address = _get_wallet_pubkey_str(wallet)
+    private_key = _get_wallet_privkey_b58(wallet)
+    
+    if not wallet_address or not private_key:
+        return jsonify({"ok": False, "error": "wallet keys not found"}), 400
+    
+    client, rpc_url = _rpc_client_from_config()
+    
+    try:
+        # 🔥 IMPLÉMENTATION COMPLÈTE SPL TOKEN TRANSFER avec gestion ATA
+        from solders.keypair import Keypair
+        from solders.pubkey import Pubkey
+        from solders.transaction import Transaction
+        from solders.message import Message
+        from solders.instruction import Instruction, AccountMeta
+        from spl.token.constants import TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID
+        from solana.rpc.commitment import Confirmed
+        import time
+        
+        # Parse addresses
+        sender_pubkey = Pubkey.from_string(wallet_address)
+        recipient_pubkey = Pubkey.from_string(recipient)
+        token_mint = Pubkey.from_string(token_address)
+        sender_keypair = Keypair.from_base58_string(private_key)
+        
+        # Récupérer les métadonnées du token pour les décimales
+        from rug.src.wallet_service import get_token_metadata
+        token_metadata = get_token_metadata(token_address, rpc_url)
+        decimals = token_metadata.get("decimals", 9)
+        
+        # Convertir le montant en unités atomiques
+        amount_atomic = int(float(amount) * (10 ** decimals))
+        
+        # Calculer les ATA addresses
+        def get_ata_address(owner: Pubkey, mint: Pubkey) -> Pubkey:
+            """Calcule l'adresse ATA pour owner + mint"""
+            from spl.token.instructions import get_associated_token_address
+            return get_associated_token_address(owner, mint)
+        
+        sender_ata = get_ata_address(sender_pubkey, token_mint)
+        recipient_ata = get_ata_address(recipient_pubkey, token_mint)
+        
+        # Vérifier si les ATA existent
+        def account_exists(address: Pubkey) -> bool:
+            try:
+                resp = client.get_account_info(address, commitment=Confirmed)
+                return resp.value is not None
+            except:
+                return False
+        
+        instructions = []
+        
+        # Créer ATA destinataire si n'existe pas
+        if not account_exists(recipient_ata):
+            from spl.token.instructions import create_associated_token_account
+            create_ata_ix = create_associated_token_account(
+                payer=sender_pubkey,
+                owner=recipient_pubkey,
+                mint=token_mint
+            )
+            instructions.append(create_ata_ix)
+        
+        # Instruction de transfert SPL
+        from spl.token.instructions import transfer_checked, TransferCheckedParams
+        transfer_ix = transfer_checked(
+            TransferCheckedParams(
+                program_id=TOKEN_PROGRAM_ID,
+                source=sender_ata,
+                mint=token_mint,
+                dest=recipient_ata,
+                owner=sender_pubkey,
+                amount=amount_atomic,
+                decimals=decimals
+            )
+        )
+        instructions.append(transfer_ix)
+        
+        # Construire et envoyer la transaction
+        recent_blockhash = client.get_latest_blockhash(commitment=Confirmed).value.blockhash
+        message = Message.new_with_blockhash(instructions, sender_pubkey, recent_blockhash)
+        transaction = Transaction.new_unsigned(message)
+        transaction.sign([sender_keypair], recent_blockhash)
+        
+        # Envoyer la transaction
+        result = client.send_transaction(transaction, opts={"skip_confirmation": False, "preflight_commitment": Confirmed})
+        tx_signature = str(result.value)
+        
+        return jsonify({
+            "ok": True,
+            "transfer": {
+                "wallet_id": wallet_id,
+                "from_address": wallet_address,
+                "from_ata": str(sender_ata),
+                "to_address": recipient,
+                "to_ata": str(recipient_ata),
+                "token_address": token_address,
+                "amount": amount,
+                "amount_atomic": amount_atomic,
+                "decimals": decimals,
+                "transaction_signature": tx_signature,
+                "timestamp": time.time(),
+                "status": "confirmed"
+            },
+            "rpc_url": rpc_url
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "ok": False,
+            "error": f"Transfer failed: {str(e)}",
+            "from_address": wallet_address,
+            "to_address": recipient,
+            "token_address": token_address
+        }), 500

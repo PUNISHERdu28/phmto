@@ -179,14 +179,21 @@ def _project_dir(base: str, project_id: str) -> Path:
 
 def _ensure_wallet_render(w: dict, include_balance=False, rpc_url=None) -> dict:
     """
-    Normalise le rendu JSON d'un wallet pour v3.5 : id, name, address, balance_sol?, created_at, private_key.
+    Normalise le rendu JSON d'un wallet pour v3.5 : id, name, address, balance_sol?, created_at.
+    🔒 SÉCURISÉ - Les clés privées ne sont JAMAIS exposées dans les réponses API.
+    🔥 FIX CRITIQUE: Plus de substring [:8] - ID complet pour sécurité.
     """
+    # 🔒 SÉCURITÉ CRITIQUE: Utiliser ID complet - AUCUN substring dangereux
+    wallet_id = str(w.get("id") or w.get("wallet_id") or "")
+    if not wallet_id:
+        # Si pas d'ID, utiliser adresse complète comme identifiant sécurisé
+        wallet_id = str(w.get("address") or w.get("pubkey") or "")
+    
     out = {
-        "id": str(w.get("id") or w.get("wallet_id") or (w.get("address") or "")[:8]),
+        "id": wallet_id,  # 🔒 ID COMPLET - plus de [:8] dangereux
         "name": w.get("name"),
         "address": w.get("address") or w.get("pubkey"),
         "created_at": w.get("created_at") or w.get("created") or None,
-        "private_key": w.get("private_key_base58_64") or w.get("private_key") or w.get("secret"),
     }
     if include_balance and out["address"]:
         try:
@@ -346,8 +353,10 @@ def rename_wallet(wallet_id: str):
         pd = pr.to_dict() or {}
         changed = False
         for w in (pd.get("wallets") or []):
-            wid = str(w.get("id") or w.get("wallet_id") or (w.get("address") or "")[:8])
-            if wid == str(wallet_id):
+            # 🔒 SÉCURITÉ CRITIQUE: Correspondances EXACTES seulement - AUCUN substring
+            wid = str(w.get("id") or w.get("wallet_id") or "")
+            addr = str(w.get("address") or w.get("pubkey") or "")
+            if (wid and wid == str(wallet_id)) or (addr and addr == str(wallet_id)):
                 w["name"] = new_name
                 changed = True
         if changed:
@@ -388,34 +397,25 @@ def wallet_detail(wallet_id: str):
         for w in (pd.get("wallets") or []):
             wid = str(w.get("id") or w.get("wallet_id") or "")
             addr = str(w.get("address") or w.get("pubkey") or "")
-            addr_short = addr[:8] if addr else ""
+            # 🔥 FIX CRITIQUE: SUPPRIMÉ addr_short[:8] - plus de substring dangereux
             
-            # Résolution multiple: id exact, address complète, ou premiers 8 caractères  
-            if (wid == str(wallet_id) or 
-                addr == str(wallet_id) or 
-                addr_short == str(wallet_id)):
+            # 🔒 SÉCURITÉ CRITIQUE: Résolution EXACTE seulement - AUCUN substring
+            if (wid and wid == str(wallet_id)) or (addr and addr == str(wallet_id)):
                 return jsonify({"ok": True, "wallet": _ensure_wallet_render(w, include_balance=include_balance, rpc_url=rpc)})
     return jsonify({"ok": False, "error": "wallet not found"}), 404
 
 @bp.get("/wallets/<wallet_id>/export")
 @require_api_key
 def export_wallet(wallet_id: str):
-    """Exporte un wallet en JSON brut (adresse + clé privée)."""
-    base = current_app.config["DATA_DIR"]
-    for pdir in iter_project_dirs(base):
-        pr = load_project(pdir)
-        pd = pr.to_dict() or {}
-        for w in (pd.get("wallets") or []):
-            wid = str(w.get("id") or w.get("wallet_id") or (w.get("address") or "")[:8])
-            if wid == str(wallet_id):
-                out = {
-                    "type": "wallet_backup",
-                    "timestamp": _now_iso(),
-                    "project": {"project_id": pr.project_id, "name": pr.name, "slug": pr.slug},
-                    "wallet": {"address": w.get("address") or w.get("pubkey"), "private_key": w.get("private_key_base58_64") or w.get("private_key") or w.get("secret")}
-                }
-                return jsonify(out)
-    return jsonify({"ok": False, "error": "wallet not found"}), 404
+    """
+    🔒 ENDPOINT DÉSACTIVÉ POUR SÉCURITÉ - L'export des clés privées via API est interdit.
+    Utiliser les backups locaux ou les outils administratifs sécurisés.
+    """
+    return jsonify({
+        "ok": False, 
+        "error": "Wallet private key export disabled for security",
+        "note": "Use local backup tools or secure administrative access"
+    }), 403
 
 @bp.post("/<project_id>/wallets/import")
 @require_api_key
@@ -442,3 +442,100 @@ def import_wallets(project_id: str):
         return jsonify({"ok": True, "imported": len(imported), "wallets": [w.address for w in imported]})
     except Exception as e:
         return jsonify({"ok": False, "error": f"import failed: {str(e)}"}), 400
+
+
+@bp.get("/<project_id>/stats")
+@require_api_key
+def project_stats(project_id: str):
+    """
+    📊 Statistiques complètes d'un projet memecoin.
+    Essential pour analyser la performance du token créé.
+    """
+    base = current_app.config["DATA_DIR"]
+    
+    try:
+        pdir = _project_dir(base, project_id)
+    except FileNotFoundError:
+        return jsonify({"ok": False, "error": "project not found"}), 404
+    
+    pr = load_project(pdir)
+    pd = _project_to_dict(pr)
+    
+    # Informations de base du projet
+    project_info = {
+        "project_id": pd.get("project_id"),
+        "name": pd.get("name"),
+        "created_at": pd.get("created_at"),
+        "wallets_count": len(pd.get("wallets", []))
+    }
+    
+    # Informations du token
+    token_info = pd.get("token", {})
+    token_stats = {
+        "name": token_info.get("name"),
+        "symbol": token_info.get("symbol"), 
+        "description": token_info.get("description"),
+        "decimals": token_info.get("decimals", 9),
+        "initial_supply": token_info.get("initial_supply", 1_000_000_000)
+    }
+    
+    # Calculer les statistiques des wallets
+    wallets = pd.get("wallets", [])
+    total_sol_balance = 0.0
+    active_wallets = 0
+    
+    try:
+        rpc = resolve_rpc(
+            current_app.config["DEFAULT_RPC"], 
+            current_app.config.get("CLUSTER", ""), 
+            request.args.get("rpc", "")
+        )
+        
+        for wallet in wallets:
+            try:
+                addr = wallet.get("address") or wallet.get("pubkey")
+                if addr:
+                    balance = get_balance_sol(addr, rpc_url=rpc)
+                    total_sol_balance += balance
+                    if balance > 0:
+                        active_wallets += 1
+            except Exception:
+                continue
+                
+    except Exception:
+        pass
+    
+    # Statistiques financières (simulées pour l'instant)
+    import time
+    import random
+    
+    financial_stats = {
+        "total_sol_balance": total_sol_balance,
+        "active_wallets": active_wallets,
+        "estimated_token_supply": token_stats["initial_supply"],
+        "estimated_market_cap_usd": random.uniform(10000, 500000),  # Simulation
+        "estimated_price_usd": random.uniform(0.00001, 0.01),       # Simulation
+        "holders_count": random.randint(50, 1000),                   # Simulation
+        "volume_24h_usd": random.uniform(1000, 50000),              # Simulation
+        "price_change_24h": random.uniform(-30, 50),                # Simulation
+        "all_time_high": random.uniform(0.01, 0.1),                 # Simulation
+        "all_time_low": random.uniform(0.000001, 0.001),            # Simulation
+    }
+    
+    # Métriques de performance
+    performance_metrics = {
+        "roi_percentage": random.uniform(-50, 500),  # Simulation
+        "liquidity_usd": random.uniform(5000, 100000),  # Simulation
+        "trading_pairs": ["SOL", "USDC"],  # Typique pour Solana
+        "dex_listings": ["Raydium", "Jupiter", "Orca"],  # Simulation
+        "last_updated": time.time()
+    }
+    
+    return jsonify({
+        "ok": True,
+        "project": project_info,
+        "token": token_stats,
+        "financial": financial_stats,
+        "performance": performance_metrics,
+        "note": "Stats include simulated market data - integrate with Jupiter/CoinGecko for real data"
+    })
