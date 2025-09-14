@@ -31,9 +31,9 @@ def create_app() -> Flask:
 
     # --- Swagger UI ---
 
-    # Route personnalisée pour Swagger UI avec thème sombre intégré
+    # Route simple pour Swagger UI par défaut
     @app.route('/docs')
-    def swagger_ui_with_dark_theme():
+    def swagger_ui():
         from flask import render_template_string
         template = """
 <!DOCTYPE html>
@@ -42,23 +42,8 @@ def create_app() -> Flask:
   <meta charset="UTF-8">
   <title>Rug API v3.6 (Solana Wallet Management)</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
-  <link rel="stylesheet" type="text/css" href="/static/swagger-dark.css" />
   <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist/favicon-32x32.png" sizes="32x32" />
   <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist/favicon-16x16.png" sizes="16x16" />
-  <style>
-    html {
-      box-sizing: border-box;
-      overflow: -moz-scrollbars-vertical;
-      overflow-y: scroll;
-    }
-    *, *:before, *:after {
-      box-sizing: inherit;
-    }
-    body {
-      margin:0;
-      background: #1a1a1a;
-    }
-  </style>
 </head>
 <body>
   <div id="swagger-ui"></div>
@@ -77,21 +62,7 @@ def create_app() -> Flask:
         plugins: [
           SwaggerUIBundle.plugins.DownloadUrl
         ],
-        layout: "StandaloneLayout",
-        docExpansion: "none",
-        filter: true,
-        showExtensions: true,
-        showCommonExtensions: true,
-        displayOperationId: false,
-        displayRequestDuration: true,
-        showMutatedRequest: true,
-        supportedSubmitMethods: ["get", "post", "put", "delete", "patch"],
-        tryItOutEnabled: true,
-        validatorUrl: null,
-        syntaxHighlight: {
-          activated: true,
-          theme: "tomorrow-night"
-        }
+        layout: "StandaloneLayout"
       });
     };
   </script>
