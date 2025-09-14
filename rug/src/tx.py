@@ -32,8 +32,10 @@ def _get_balance_lamports(client: Client, pub: Pubkey) -> int:
 def _estimate_fee_lamports(client: Client, tx: Transaction) -> int:
     """Estime les frais en lamports via get_fee_for_message, fallback si indispo."""
     try:
+        # Assumons que la transaction a déjà un recent_blockhash configuré
+        # Si besoin de mise à jour, utiliser l'objet Hash directement
         bh = client.get_latest_blockhash()
-        tx.recent_blockhash = bh.value.blockhash  # solders.Hash compatible avec solana-py 0.31
+        tx.recent_blockhash = bh.value.blockhash
         msg = tx.compile_message()
         fee_resp = client.get_fee_for_message(msg)
         return int(fee_resp.value) if fee_resp.value is not None else FALLBACK_FEE_LAMPORTS
@@ -125,8 +127,12 @@ def send_sol(
     # 3) Vérification solde et frais estimés
     balance = _get_balance_lamports(client, from_pub)
 
+    # Obtenir le blockhash d'abord
+    bh = client.get_latest_blockhash()
+    rb = bh.value.blockhash
+    
     # Construire une tx squelette pour estimer les frais
-    dummy_tx = Transaction().add(
+    dummy_tx = Transaction(recent_blockhash=rb, fee_payer=from_pub).add(
         transfer(TransferParams(from_pubkey=from_pub, to_pubkey=to_pub, lamports=max(1, min(lamports, 1000))))
     )
     fee = _estimate_fee_lamports(client, dummy_tx)
@@ -144,12 +150,12 @@ def send_sol(
         )
 
     # 4) Construction + envoi
-    tx = Transaction().add(
+    # Obtenir un blockhash frais pour la transaction finale
+    bh_final = client.get_latest_blockhash()
+    rb2 = bh_final.value.blockhash
+    tx = Transaction(recent_blockhash=rb2, fee_payer=from_pub).add(
         transfer(TransferParams(from_pubkey=from_pub, to_pubkey=to_pub, lamports=lamports))
     )
-    tx.fee_payer = from_pub
-    bh = client.get_latest_blockhash()
-    tx.recent_blockhash = bh.value.blockhash
 
     sig = client.send_transaction(
         tx,

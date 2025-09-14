@@ -141,7 +141,7 @@ def transfer_from_wallet_id(wallet_id: str):
         else:
             import base58 as _b58
             kp = Keypair.from_bytes(_b58.b58decode(sender_priv))
-        sig = send_sol(client, kp, recipient, Decimal(str(amt)))
+        sig = send_sol(sender_priv, recipient, float(amt), client._provider.endpoint_uri)
         return jsonify({
             "ok": True,
             "from_wallet_id": wallet_id,
@@ -152,7 +152,9 @@ def transfer_from_wallet_id(wallet_id: str):
             "rpc_url": client._provider.endpoint_uri
         })
     except Exception as e:
-        return jsonify({"ok": False, "error": f"transfer failed: {e}"}), 500
+        import traceback
+        full_traceback = traceback.format_exc()
+        return jsonify({"ok": False, "error": f"transfer failed: {e}", "debug_trace": full_traceback}), 500
 
 @bp.post("/wallets/mix")
 @require_api_key
@@ -210,7 +212,7 @@ def mix_wallets():
                 if amount <= 0:
                     continue
                 kp = Keypair.from_bytes(__import__("base58").b58decode(src["priv"]) if isinstance(src["priv"], str) else bytes(src["priv"]))
-                sig = send_sol(client, kp, dst["addr"], Decimal(str(amount)))
+                sig = send_sol(src["priv"], dst["addr"], amount, client._provider.endpoint_uri)
                 history.append({"from_wallet_id": _derive_wallet_id(src["addr"]), "from_address": src["addr"], "to_address": dst["addr"], "amount_sol": amount, "signature": sig})
         else:
             import random
@@ -229,7 +231,7 @@ def mix_wallets():
                 if amount <= 0:
                     continue
                 kp = Keypair.from_bytes(__import__("base58").b58decode(src["priv"]) if isinstance(src["priv"], str) else bytes(src["priv"]))
-                sig = send_sol(client, kp, dst["addr"], Decimal(str(amount)))
+                sig = send_sol(src["priv"], dst["addr"], amount, client._provider.endpoint_uri)
                 history.append({"from_wallet_id": _derive_wallet_id(src["addr"]), "from_address": src["addr"], "to_address": dst["addr"], "amount_sol": amount, "signature": sig})
     except Exception as e:
         return jsonify({"ok": False, "error": f"mix failed: {e}", "history": history}), 500
@@ -292,7 +294,7 @@ def consolidate(target_wallet_id: str):
             skipped.append({"wallet_id": wid, "reason": f"no available balance (balance={bal})"}); continue
         try:
             kp = Keypair.from_bytes(__import__("base58").b58decode(priv) if isinstance(priv, str) else bytes(priv))
-            sig = send_sol(client, kp, target_addr, Decimal(str(amount)))
+            sig = send_sol(priv, target_addr, amount, client._provider.endpoint_uri)
             history.append({"from_wallet_id": wid, "from_address": addr, "to_wallet_id": target_wallet_id, "to_address": target_addr, "amount_sol": amount, "signature": sig})
         except Exception as e:
             skipped.append({"wallet_id": wid, "reason": f"transfer failed: {e}"})

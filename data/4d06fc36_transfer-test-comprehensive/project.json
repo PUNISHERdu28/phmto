@@ -1,0 +1,26 @@
+{
+  "project_id": "4d06fc36",
+  "name": "transfer-test-comprehensive",
+  "slug": "transfer-test-comprehensive",
+  "created_at": "2025-09-14T16:18:20Z",
+  "wallets": [],
+  "token": {
+    "name": "MyMeme",
+    "symbol": "MEME",
+    "description": "Memecoin Solana",
+    "image_uri": null,
+    "website": null,
+    "twitter": null,
+    "telegram": null,
+    "category": "memecoin",
+    "tags": [],
+    "decimals": 9,
+    "initial_supply": 1000000000
+  },
+  "pumpfun": {
+    "initial_liquidity_sol": 0.5,
+    "jito_tip_microlamports": 0,
+    "bonding_curve": "default"
+  },
+  "extras": {}
+}

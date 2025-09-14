@@ -29,3 +29,5 @@ rich
 solana
 solders
 requests
+solana==0.34.2
+solders==0.21.0
