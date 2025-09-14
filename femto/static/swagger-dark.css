@@ -468,46 +468,27 @@
 }
 
 /* =================================
-   Custom Enhancements
+   Simple & Clean (User-Focused)
    ================================= */
 
-/* Add a subtle glow effect to focused elements */
-.swagger-ui input:focus,
-.swagger-ui textarea:focus,
-.swagger-ui select:focus {
-  outline: none !important;
-  border-color: var(--swagger-accent-primary) !important;
-  box-shadow: 0 0 0 2px rgba(97, 175, 254, 0.2) !important;
-}
-
-/* Improve readability of enum values */
-.swagger-ui select {
+/* Simplified response focus */
+.swagger-ui .response-content-type {
   background: var(--swagger-bg-primary) !important;
   border: 1px solid var(--swagger-border) !important;
-  color: var(--swagger-text-primary) !important;
-  border-radius: 4px !important;
-}
-
-/* Add visual hierarchy to nested schemas */
-.swagger-ui .model-box .model-box {
-  border-left: 3px solid var(--swagger-accent-primary) !important;
-  margin-left: 1rem !important;
-}
-
-/* Enhance code block appearance */
-.swagger-ui pre {
-  background: var(--swagger-bg-primary) !important;
-  border: 1px solid var(--swagger-border) !important;
-  border-radius: 8px !important;
+  border-radius: 6px !important;
   padding: 1rem !important;
+  font-family: 'Monaco', 'Consolas', monospace !important;
+  font-size: 0.9rem !important;
+  line-height: 1.6 !important;
 }
 
-/* Custom animation for opening/closing operations */
-.swagger-ui .opblock {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
+/* Clean JSON syntax highlighting */
+.swagger-ui .highlight-code .hljs-string { color: #a5d6ff !important; }
+.swagger-ui .highlight-code .hljs-number { color: #79c0ff !important; }
+.swagger-ui .highlight-code .hljs-literal { color: #ffab70 !important; }
+.swagger-ui .highlight-code .hljs-attr { color: #ff7b72 !important; }
 
-/* Improve visibility of required indicators */
+/* Essential elements only */
 .swagger-ui .required {
   color: var(--swagger-error) !important;
   font-weight: 600 !important;
