@@ -84,7 +84,43 @@ def create_wallets(project_id: str):
     pr = load_project(pdir)
     new_ws = generate_wallets(pr, n)
     save_project(pr, dossier_base=base)
-    return jsonify({"ok": True, "created": len(new_ws), "wallets": [w.address for w in new_ws]}), 201
+    
+    # Créer la structure de wallet avec clés privées masquées
+    def _mask_private_key(private_key: str) -> str:
+        """Masque une clé privée en gardant les premiers/derniers caractères."""
+        if not private_key or len(private_key) < 10:
+            return "***masked***"
+        return f"{private_key[:6]}***...***{private_key[-4:]}"
+    
+    formatted_wallets = []
+    for w in new_ws:
+        # Récupérer les attributs du wallet
+        wallet_id = getattr(w, "id", None) or getattr(w, "wallet_id", None)
+        wallet_name = getattr(w, "name", None)
+        wallet_address = getattr(w, "address", None)
+        created_at = getattr(w, "created_at", None)
+        private_key = getattr(w, "private_key", None) or getattr(w, "secret", None)
+        
+        # Formater le wallet avec clé masquée
+        formatted_wallet = {
+            "id": wallet_id,
+            "name": wallet_name,
+            "address": wallet_address,
+            "created_at": created_at,
+            "balance_sol": 0,
+            "private_key_masked": _mask_private_key(private_key) if private_key else "***no_key***"
+        }
+        
+        # Ajouter le solde si possible
+        if wallet_address:
+            try:
+                formatted_wallet["balance_sol"] = get_balance_sol(wallet_address, rpc_url=resolve_rpc(current_app.config["DEFAULT_RPC"], "", ""))
+            except:
+                formatted_wallet["balance_sol"] = 0
+        
+        formatted_wallets.append(formatted_wallet)
+    
+    return jsonify({"ok": True, "created": len(new_ws), "wallets": formatted_wallets}), 201
 
 @bp.get("/<project_id>/wallets")
 @require_api_key
