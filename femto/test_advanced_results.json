@@ -1,0 +1,57 @@
+[
+  {
+    "test": "Health Check",
+    "success": true,
+    "details": "Cluster: , RPC: https://api.mainnet-beta.solana.com"
+  },
+  {
+    "test": "Create Project",
+    "success": true,
+    "details": "ID: 0f700f8f"
+  },
+  {
+    "test": "Create Wallets",
+    "success": false,
+    "details": "Error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+  },
+  {
+    "test": "Token Configuration",
+    "success": true,
+    "details": "Token metadata configured"
+  },
+  {
+    "test": "Project Stats",
+    "success": true,
+    "details": "0 wallets, token: N/A"
+  },
+  {
+    "test": "Rename Project",
+    "success": true,
+    "details": "Project renamed"
+  },
+  {
+    "test": "Export Project",
+    "success": true,
+    "details": "Exported with 1 wallets"
+  },
+  {
+    "test": "404 Handling",
+    "success": true,
+    "details": "Correctly returns 404 for non-existent endpoints"
+  },
+  {
+    "test": "Non-existent Project",
+    "success": true,
+    "details": "Correctly handles non-existent project"
+  },
+  {
+    "test": "Project Without Name",
+    "success": true,
+    "details": "Correctly rejects project creation without name"
+  },
+  {
+    "test": "Invalid Wallet Count",
+    "success": false,
+    "details": "Correctly handles invalid wallet count"
+  }
+]
