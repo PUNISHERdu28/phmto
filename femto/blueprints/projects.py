@@ -407,6 +407,13 @@ def create_project():
         return jsonify({"ok": False, "error": "name is required"}), 400
     base = current_app.config["DATA_DIR"]
     pr = nouveau_projet(name, dossier_base=base)  # utilise service existant
+        # Forcer le statut du token à "undeployed" dès la création
+    try:
+        # Même si le dataclass n'a pas le champ, on le garde en mémoire
+        pr.token.status = "undeployed"
+    except Exception:
+        pass
+
     # enrichir
     obj = pr.to_dict()
     obj["created_at"] = obj.get("created_at") or _now_iso()
@@ -423,12 +430,31 @@ def list_projects():
         try:
             pr = load_project(pdir)
             pd = pr.to_dict() or {}
+            # Détection "token édité" : par défaut le modèle met "MyMeme"/"MEME".
+            token_dict = (pd.get("token") or {})
+            default_name = "MyMeme"
+            default_symbol = "MEME"
+            edited = bool(token_dict) and (
+                (token_dict.get("name") and token_dict.get("name") != default_name) or
+                (token_dict.get("symbol") and token_dict.get("symbol") != default_symbol)
+            )
+
+            token_block = None
+            if edited:
+                token_block = {
+                    "name": token_dict.get("name"),
+                    "symbol": token_dict.get("symbol"),
+                    # si non présent dans le JSON du projet, on force "undeployed" par défaut
+                    "status": token_dict.get("status") or "undeployed",
+                }
+
             projs.append({
                 "project_id": pd.get("project_id"),
                 "name": pd.get("name"),
-                "slug": pd.get("slug"),
                 "created_at": pd.get("created_at"),
+                "slug": pd.get("slug"),
                 "wallets": len(pd.get("wallets") or []),
+                "token": token_block,
             })
         except Exception:
             continue

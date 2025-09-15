@@ -57,7 +57,16 @@ def load_project(path: Path | str) -> Project:
 def save_project(project: Project, dossier_base: Path | str = "./data") -> Path:
     base = _project_dir(dossier_base, project)
     ensure_dir(base)
-    write_json(base / "project.json", project.to_dict())
+       # Construire un dict sauvegardable et injecter 'token.status' si posé dynamiquement
+    d = project.to_dict()
+    try:
+        if getattr(project, "token", None) is not None and getattr(project.token, "status", None) is not None:
+            d.setdefault("token", {})
+            d["token"]["status"] = project.token.status
+    except Exception:
+        pass
+
+    write_json(base / "project.json", d)
     # aussi un dump rapide des wallets :
     write_json(base / "wallets.json", {"wallets": [asdict(w) for w in project.wallets]})
     return base
