@@ -8,6 +8,33 @@ from slugify import slugify
 from .models import Project, TokenMetadata, PumpFunConfig, WalletExport, new_project_id
 from .storage import ensure_dir, write_json, write_text, read_json
 from .wallet_gen import generate_wallet
+import os
+try:
+    from flask import current_app
+except Exception:
+    current_app = None
+
+def resolve_data_dir() -> Path:
+    """
+    Résout le DATA_DIR dans l'ordre :
+    - current_app.config["DATA_DIR"] si Flask est dispo
+    - variable d'environnement DATA_DIR
+    - ./data (par défaut)
+    Garantit l'existence du dossier et retourne un Path.
+    """
+    base = None
+    try:
+        if current_app is not None:
+            base = current_app.config.get("DATA_DIR")
+    except Exception:
+        base = None
+    if not base:
+        base = os.environ.get("DATA_DIR")
+    if not base:
+        base = "./data"
+    p = Path(base)
+    p.mkdir(parents=True, exist_ok=True)
+    return p
 
 def _project_dir(base: Path | str, project: Project) -> Path:
     return Path(base) / f"{project.project_id}_{project.slug}"
@@ -42,6 +69,13 @@ def load_project(path: Path | str) -> Project:
             wallets.append(w)
     
     token = TokenMetadata(**data["token"])
+
+    token_data = (data.get("token") or {}).copy()
+    token_status = token_data.pop("status", None)  # ignorer les champs non supportés par le dataclass
+    token = TokenMetadata(**token_data)
+    if token_status is not None:
+        setattr(token, "status", token_status)  # on rattache l'attribut dynamiquement
+
     pumpfun = PumpFunConfig(**data["pumpfun"])
     return Project(
         project_id=data["project_id"],
@@ -55,9 +89,15 @@ def load_project(path: Path | str) -> Project:
     )
 
 def save_project(project: Project, dossier_base: Path | str = "./data") -> Path:
-    base = _project_dir(dossier_base, project)
-    ensure_dir(base)
-       # Construire un dict sauvegardable et injecter 'token.status' si posé dynamiquement
+        # Résoudre le répertoire du projet (prend en compte DATA_DIR auto)
+    base_dir = Path(dossier_base) if dossier_base else resolve_data_dir()
+    base = base_dir / f"{project.project_id}_{project.slug}"
+    try:
+        base.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        raise RuntimeError(f"Cannot create project dir {base}: {e}")
+
+    # Construire un dict sauvegardable et injecter 'token.status' si posé dynamiquement
     d = project.to_dict()
     try:
         if getattr(project, "token", None) is not None and getattr(project.token, "status", None) is not None:
@@ -66,8 +106,10 @@ def save_project(project: Project, dossier_base: Path | str = "./data") -> Path:
     except Exception:
         pass
 
+    # DEBUG optionnel: trace où on écrit (tu peux enlever plus tard)
+    # print(f"[save_project] Writing to {base}")
+
     write_json(base / "project.json", d)
-    # aussi un dump rapide des wallets :
     write_json(base / "wallets.json", {"wallets": [asdict(w) for w in project.wallets]})
     return base
 
@@ -147,3 +189,14 @@ def import_wallets_from_lines(project: Project, lines: List[str]) -> List[Wallet
         imported.append(wallet)
     project.wallets.extend(imported)
     return imported
+
+def move_project_to_trash(project_dir: Path, data_dir: Path) -> None:
+    trash = data_dir / ".trash"
+    trash.mkdir(parents=True, exist_ok=True)
+    target = trash / project_dir.name
+    # éviter collisions en ajoutant un suffixe numérique si besoin
+    i = 1
+    while target.exists():
+        target = trash / f"{project_dir.name}-{i}"
+        i += 1
+    project_dir.rename(target)

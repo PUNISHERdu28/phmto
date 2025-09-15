@@ -9,10 +9,14 @@ from conrad.api_utils import iter_project_dirs, find_project_dir
 from rug.src.project_service import nouveau_projet, save_project, load_project, generate_wallets
 from rug.src.wallet_service import get_balance_sol
 from conrad.config import resolve_rpc
-
+from rug.src.project_service import save_project  # si pas déjà importé
+from rug.src.project_service import move_project_to_trash  # s'il existe chez toi
 from pathlib import Path
-from services.backups import backup_project, move_project_to_trash
+
+from services.backups import backup_project, move_project_to_trash as backup_move_to_trash
+
 from services.fileio import ensure_dir
+from rug.src.project_service import resolve_data_dir
 
 
 bp = Blueprint("projects", __name__, url_prefix="/api/v1/projects")
@@ -408,6 +412,12 @@ def create_project():
     base = current_app.config["DATA_DIR"]
     pr = nouveau_projet(name, dossier_base=base)  # utilise service existant
         # Forcer le statut du token à "undeployed" dès la création
+        # Forcer le statut initial du token
+    try:
+        setattr(pr.token, "status", "undeployed")
+    except Exception:
+        pass
+
     try:
         # Même si le dataclass n'a pas le champ, on le garde en mémoire
         pr.token.status = "undeployed"
@@ -424,40 +434,65 @@ def create_project():
 @require_api_key
 def list_projects():
     """Liste tous les projets (synthèse)."""
-    base = current_app.config["DATA_DIR"]
+    from pathlib import Path
+    from rug.src.project_service import resolve_data_dir
+    from femto.rug.src.project_service import load_project  # ajuste l'import si différent
+
+    base = resolve_data_dir()
     projs = []
-    for pdir in iter_project_dirs(base):
-        try:
-            pr = load_project(pdir)
-            pd = pr.to_dict() or {}
-            # Détection "token édité" : par défaut le modèle met "MyMeme"/"MEME".
-            token_dict = (pd.get("token") or {})
-            default_name = "MyMeme"
-            default_symbol = "MEME"
-            edited = bool(token_dict) and (
-                (token_dict.get("name") and token_dict.get("name") != default_name) or
-                (token_dict.get("symbol") and token_dict.get("symbol") != default_symbol)
-            )
 
-            token_block = None
-            if edited:
-                token_block = {
-                    "name": token_dict.get("name"),
-                    "symbol": token_dict.get("symbol"),
-                    # si non présent dans le JSON du projet, on force "undeployed" par défaut
-                    "status": token_dict.get("status") or "undeployed",
-                }
-
-            projs.append({
-                "project_id": pd.get("project_id"),
-                "name": pd.get("name"),
-                "created_at": pd.get("created_at"),
-                "slug": pd.get("slug"),
-                "wallets": len(pd.get("wallets") or []),
-                "token": token_block,
-            })
-        except Exception:
+    for d in base.iterdir():
+        if not d.is_dir():
             continue
+
+        pj = d / "project.json"
+        if not pj.exists():
+            continue
+
+        try:
+            pr = load_project(d)
+        except Exception as e:
+            # on log et on passe au dossier suivant, mais PAS de 'continue' hors boucle
+            try:
+                current_app.logger.warning(f"[list_projects] skip {d.name}: {e}")
+            except Exception:
+                pass
+            continue
+
+        pd = pr.to_dict() or {}
+
+        # Détection "token édité" : par défaut le modèle met "MyMeme"/"MEME"
+        token_dict = pd.get("token") or {}
+        default_name = "MyMeme"
+        default_symbol = "MEME"
+        edited = bool(token_dict) and (
+            (token_dict.get("name") and token_dict.get("name") != default_name) or
+            (token_dict.get("symbol") and token_dict.get("symbol") != default_symbol)
+        )
+
+        token_block = None
+        if edited:
+            # si status absent du JSON, on retombe sur 'undeployed' (ou l'attribut posé en mémoire)
+            fallback_status = "undeployed"
+            try:
+                fallback_status = getattr(getattr(pr, "token", None), "status", "undeployed") or "undeployed"
+            except Exception:
+                pass
+            token_block = {
+                "name": token_dict.get("name"),
+                "symbol": token_dict.get("symbol"),
+                "status": token_dict.get("status") or fallback_status,
+            }
+
+        projs.append({
+            "project_id": pd.get("project_id"),
+            "name": pd.get("name"),
+            "created_at": pd.get("created_at"),
+            "slug": pd.get("slug"),
+            "wallets": len(pd.get("wallets") or []),
+            "token": token_block,
+        })
+
     return jsonify({"ok": True, "projects": projs})
 
 @bp.patch("/<project_id>")
@@ -531,32 +566,90 @@ def import_project():
         return jsonify({"ok": False, "error": "invalid JSON body"}), 400
     if not isinstance(data, dict):
         return jsonify({"ok": False, "error": "JSON object required"}), 400
+    
     base = current_app.config["DATA_DIR"]
-    # Recréer projet
-    name = (data.get("name") or data.get("project", {}).get("name") or "Imported Project").strip()
+
+    # Accepte soit {"project_backup": {...}}, soit directement {...}
+    raw = data.get("project_backup") if isinstance(data.get("project_backup"), dict) else data
+    if not isinstance(raw, dict):
+        return jsonify({"ok": False, "error": "invalid 'project_backup' object"}), 400
+
+    # 1) Créer une coquille de projet (génère un dossier initial)
+    name = (raw.get("name") or raw.get("project", {}).get("name") or "Imported Project").strip()
     pr = nouveau_projet(name, dossier_base=base)
-    # Injecter wallets si fournis
-    wallets = data.get("wallets") or data.get("wallets_file", {}).get("wallets") or []
+
+    old_dir = Path(base) / f"{pr.project_id}_{pr.slug}"
+
+    # 2) Écraser les métadonnées du projet avec le backup
+    if raw.get("project_id"):
+        pr.project_id = str(raw["project_id"]).strip()
+    if raw.get("slug"):
+        pr.slug = str(raw["slug"]).strip()
+    if raw.get("created_at"):
+        pr.created_at = str(raw["created_at"]).strip()
+    if isinstance(raw.get("extras"), dict):
+        pr.extras = raw["extras"]
+
+    # Si le token a un statut, on l’ignorera pour le constructeur et on le rattachera ensuite
+    token_in = raw.get("token") or {}
+    if isinstance(token_in, dict) and token_in:
+        from rug.src.models import TokenMetadata
+        token_copy = token_in.copy()
+        token_status = token_copy.pop("status", None)
+        try:
+            pr.token = TokenMetadata(**token_copy)
+        except TypeError as e:
+            return jsonify({"ok": False, "error": f"invalid token fields: {e}"}), 400
+        if token_status is not None:
+            setattr(pr.token, "status", token_status)
+
+    pumpfun_in = raw.get("pumpfun") or {}
+    if isinstance(pumpfun_in, dict) and pumpfun_in:
+        from rug.src.models import PumpFunConfig
+        try:
+            pr.pumpfun = PumpFunConfig(**pumpfun_in)
+        except TypeError as e:
+            return jsonify({"ok": False, "error": f"invalid pumpfun fields: {e}"}), 400
+
+    wallets = raw.get("wallets") or (raw.get("wallets_file", {}) or {}).get("wallets") or []
     if wallets:
-        # Convertir les dicts en instances WalletExport sécurisées
         from rug.src.models import WalletExport
-        wallet_instances = []
+        pr.wallets = []
         for w in wallets:
-            if isinstance(w, dict):
-                # Mapper les champs attendus avec support pour les anciens formats
-                wallet_data = {
-                    'address': w.get("address") or w.get("pubkey", ""),
-                    'private_key_base58_64': w.get("private_key_base58_64") or w.get("private_key") or w.get("secret", ""),
-                    'private_key_json_64': w.get("private_key_json_64", []),
-                    'public_key_hex': w.get("public_key_hex", ""),
-                    'private_key_hex_32': w.get("private_key_hex_32", ""),
-                    'name': w.get("name"),
-                    'id': w.get("id") or w.get("wallet_id")
-                }
-                wallet_instances.append(WalletExport(**wallet_data))
-        pr.wallets = wallet_instances
+            if not isinstance(w, dict):
+                continue
+            wallet_data = {
+                'address': w.get("address") or w.get("pubkey", ""),
+                'private_key_base58_64': w.get("private_key_base58_64") or w.get("private_key") or w.get("secret", ""),
+                'private_key_json_64': w.get("private_key_json_64", []),
+                'public_key_hex': w.get("public_key_hex", ""),
+                'private_key_hex_32': w.get("private_key_hex_32", ""),
+                'name': w.get("name"),
+                'id': w.get("id") or w.get("wallet_id"),
+                'created_at': w.get("created_at"),
+            }
+            pr.wallets.append(WalletExport(**wallet_data))
+
+    # 3) Déterminer le nouveau dossier final et jeter la coquille dans .trash si besoin
+    new_dir = Path(base) / f"{pr.project_id}_{pr.slug}"
+    if old_dir.exists() and old_dir != new_dir:
+        try:
+            move_project_to_trash(old_dir, Path(base))
+        except Exception:
+            # On ignore si ça échoue, save_project va créer le new_dir
+            pass
+
+    # 4) Sauvegarde (assure mkdir et écrit project.json + wallets.json)
     save_project(pr, dossier_base=base)
-    return jsonify({"ok": True, "project_id": pr.project_id, "name": pr.name, "wallets": len(pr.to_dict().get("wallets") or [])})
+
+    return jsonify({
+        "ok": True,
+        "project_id": pr.project_id,
+        "name": pr.name,
+        "wallets": len(pr.to_dict().get("wallets") or []),
+        "slug": pr.slug,
+        "created_at": pr.created_at
+    }), 201
 
 @bp.patch("/wallets/<wallet_id>")
 @require_api_key
